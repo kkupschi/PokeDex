@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>PokeDex</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-circle">P</div>
+            <div class="header-title">
+                <h1>PokeDex</h1>
+                <span class="header-subtitle">Catch & explore your favourite Pokémon</span>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <nav class="generation-nav" id="generationNav">
+                <!-- Platzhalter -->
+                <button class="gen-btn gen-btn-active" data-gen="1">Gen 1</button>
+                <button class="gen-btn" data-gen="all">All</button>
+            </nav>
+
+            <form class="search-form" id="searchForm">
+                <input type="text" id="searchInput" placeholder="Search Pokémon" />
+                <button type="submit">Search</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="content-wrapper">
+            <h2 class="section-title">Pokémon</h2>
+
+            <div id="pokemonGrid" class="pokemon-grid">
+            </div>
+
+            <div class="load-more-wrapper">
+                <button id="loadMoreBtn">Load more Pokémon</button>
+                <span id="loadStatus" class="load-status"></span>
+            </div>
+        </section>
+    </main>
+
+    <div id="overlay" class="overlay hidden">
+        <div class="overlay-backdrop" id="overlayBackdrop"></div>
+        <div class="overlay-card" id="overlayCard">
+        </div>
+    </div>
+
+    <script src="db.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
