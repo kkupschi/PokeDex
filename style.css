@@ -11,6 +11,10 @@ body {
     min-height: 100vh;
 }
 
+body.no-scroll {
+    overflow: hidden;
+}
+
 .app-header {
     display: flex;
     align-items: center;
@@ -168,6 +172,145 @@ body {
 
 .moves-list li::before {
     content: "• ";
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.overlay.visible {
+    display: flex;
+}
+
+.overlay-inner {
+    position: relative;
+    width: min(420px, 94vw);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.overlay-close {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    border: none;
+    border-radius: 999px;
+    width: 32px;
+    height: 32px;
+    background: #111827;
+    color: #f9fafb;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.overlay-close:hover {
+    background: #1f2937;
+}
+
+.overlay-card-wrapper {
+    perspective: 1000px;
+    width: 100%;
+}
+
+.overlay-card {
+    width: 100%;
+    border-radius: 18px;
+    padding: 14px 14px 18px;
+    background: #1f2937;
+    color: #f9fafb;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+    transform-style: preserve-3d;
+    transition: transform 0.35s ease;
+}
+
+/* flip animation */
+.overlay-card.flip {
+    transform: rotateY(180deg);
+}
+
+.overlay-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.overlay-name {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.overlay-id {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+.overlay-types {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.overlay-sprite-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.overlay-sprite {
+    width: 140px;
+    height: 140px;
+    image-rendering: pixelated;
+}
+
+.overlay-section-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.85;
+    margin-bottom: 4px;
+}
+
+.overlay-moves-list {
+    list-style: none;
+    font-size: 13px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+}
+
+.overlay-moves-list li::before {
+    content: "• ";
+}
+
+.overlay-nav {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.nav-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    border: none;
+    background: #f97316;
+    color: #111827;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.nav-btn:hover {
+    background: #fb923c;
 }
 
 /* responsive */
