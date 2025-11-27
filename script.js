@@ -287,6 +287,17 @@ function fillOverlayWithPokemon(pokemon) {
 
     card.style.background = `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`;
 
+    overlay.innerHTML = `
+  <div class="overlay-backdrop" onclick="closeOverlay(event)">
+    <article class="overlay-card" onclick="event.stopPropagation()">
+      <!-- hier bleibt dein bisheriger Karten-Inhalt drin -->
+      <!-- z.B. Name, ID, Sprite, Base Stats, Moves, Buttons ... -->
+      ${pokemonDetailHtml}
+    </article>
+  </div>
+`;
+
+
     card.innerHTML = /*html*/ `
     <header class="overlay-header">
       <div>

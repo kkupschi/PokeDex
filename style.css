@@ -371,6 +371,48 @@ body.no-scroll {
     background: #ffb74d;
 }
 
+/* --- Overlay-Card Animation --- */
+
+.overlay-card {
+    animation: overlayCardIn 0.35s ease-out;
+    transform-origin: center;
+    backface-visibility: hidden;
+}
+
+.overlay-card.closing {
+    animation: overlayCardOut 0.25s ease-in forwards;
+}
+
+@keyframes overlayCardIn {
+    0% {
+        transform: scale(0.9) rotateY(15deg);
+        opacity: 0;
+    }
+
+    60% {
+        transform: scale(1.02) rotateY(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1) rotateY(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes overlayCardOut {
+    0% {
+        transform: scale(1) rotateY(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(0.9) rotateY(-10deg);
+        opacity: 0;
+    }
+}
+
+
 /* RESPONSIVE */
 
 @media (max-width: 480px) {
