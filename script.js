@@ -152,6 +152,45 @@ function closeOverlay() {
     document.body.classList.remove('no-scroll');
 }
 
+function showNextPokemon() {
+    const lastIndex = pokemonList.length - 1;
+    const targetIndex =
+        currentOverlayIndex >= lastIndex ? 0 : currentOverlayIndex + 1;
+
+    animateOverlayFlip('next', targetIndex);
+}
+
+function showPrevPokemon() {
+    const lastIndex = pokemonList.length - 1;
+    const targetIndex =
+        currentOverlayIndex <= 0 ? lastIndex : currentOverlayIndex - 1;
+
+    animateOverlayFlip('prev', targetIndex);
+}
+
+function animateOverlayFlip(direction, newIndex) {
+    const card = document.querySelector('.overlay-card');
+    if (!card) {
+        return;
+    }
+
+    const flipClass = direction === 'next' ? 'flip-next' : 'flip-prev';
+
+    card.classList.remove('flip-next', 'flip-prev');
+    card.classList.add(flipClass);
+
+    // Nach der ersten Hälfte Inhalt wechseln
+    setTimeout(function () {
+        currentOverlayIndex = newIndex;
+        fillOverlayWithPokemon(pokemonList[currentOverlayIndex]);
+    }, 200);
+
+    // Animation-Klasse wieder entfernen
+    setTimeout(function () {
+        card.classList.remove('flip-next', 'flip-prev');
+    }, 400);
+}
+
 function fillOverlayWithPokemon(pokemon) {
     const card = document.getElementById('overlayCard');
 
@@ -201,16 +240,6 @@ function fillOverlayWithPokemon(pokemon) {
   `;
 }
 
-function showNextPokemon() {
-    const nextIndex = (currentOverlayIndex + 1) % pokemonList.length;
-    flipToIndex(nextIndex);
-}
-
-function showPrevPokemon() {
-    const prevIndex =
-        (currentOverlayIndex - 1 + pokemonList.length) % pokemonList.length;
-    flipToIndex(prevIndex);
-}
 
 function flipToIndex(newIndex) {
     const card = document.getElementById('overlayCard');
