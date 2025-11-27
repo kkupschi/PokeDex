@@ -30,3 +30,13 @@ const TYPE_COLORS = {
     steel: '#B7B7CE',
     fairy: '#D685AD',
 };
+
+function getTypeGradientColors(types) {
+    const primaryType = types[0] || 'normal';
+    const secondaryType = types[1] || types[0] || 'normal';
+
+    const primaryColor = TYPE_COLORS[primaryType] || '#9ca3af';
+    const secondaryColor = TYPE_COLORS[secondaryType] || primaryColor;
+
+    return { primaryColor, secondaryColor };
+};

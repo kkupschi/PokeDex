@@ -1,56 +1,129 @@
-// script.js
+const API_BASE = 'https://pokeapi.co/api/v2';
 
-let currentGeneration = 1;
-let nextPokemonId = GENERATION_RANGES[currentGeneration].start;
-const batchSize = 30;
-
-let isLoading = false;
-const pokemonCache = {};
+let pokemonList = [];
+let currentOffset = 0;
+const PAGE_SIZE = 30;
 
 function init() {
-    console.log('PokeDex init');
-
     const loadMoreBtn = document.getElementById('loadMoreBtn');
-    loadMoreBtn.addEventListener('click', handleLoadMoreClick);
+    const loadGen1Btn = document.getElementById('loadGen1Btn');
 
-    loadInitialPokemon();
+    loadMoreBtn.onclick = loadNextPage;
+    loadGen1Btn.onclick = loadGen1Demo;
+
+    loadNextPage();
 }
 
-function loadInitialPokemon() {
-    loadNextBatch();
+function loadNextPage() {
+    fetchPokemonList(currentOffset, PAGE_SIZE)
+        .then(renderPokemonCards);
+    currentOffset += PAGE_SIZE;
 }
 
-function handleLoadMoreClick() {
-    loadNextBatch();
+function loadGen1Demo() {
+    currentOffset = 0;
+    pokemonList = [];
+    document.getElementById('cardGrid').innerHTML = '';
+    loadNextPage();
 }
 
-function loadNextBatch() {
-    if (isLoading) {
-        return;
-    }
+function fetchPokemonList(offset, limit) {
+    const url = `${API_BASE}/pokemon?offset=${offset}&limit=${limit}`;
 
-    isLoading = true;
-    updateLoadingState(true);
+    return fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            const detailPromises = data.results.map(item =>
+                fetch(item.url).then(res => res.json())
+            );
 
-    console.log('Would load next batch starting from ID:', nextPokemonId);
-
-    setTimeout(() => {
-        isLoading = false;
-        updateLoadingState(false);
-    }, 500);
+            return Promise.all(detailPromises).then(details => {
+                pokemonList = pokemonList.concat(details);
+                return pokemonList;
+            });
+        })
+        .catch(error => {
+            console.error('Error while loading Pokémon:', error);
+            return pokemonList;
+        });
 }
 
-function updateLoadingState(loading) {
-    const loadMoreBtn = document.getElementById('loadMoreBtn');
-    const loadStatus = document.getElementById('loadStatus');
+function renderPokemonCards() {
+    const grid = document.getElementById('cardGrid');
+    grid.innerHTML = '';
 
-    if (loading) {
-        loadMoreBtn.disabled = true;
-        loadStatus.textContent = 'Loading Pokémon...';
-    } else {
-        loadMoreBtn.disabled = false;
-        loadStatus.textContent = '';
-    }
+    pokemonList.forEach(pokemon => {
+        const cardHtml = createPokemonCardHtml(pokemon);
+        grid.innerHTML += cardHtml;
+    });
 }
 
-document.addEventListener('DOMContentLoaded', init);
+function createPokemonCardHtml(pokemon) {
+    const name = capitalize(pokemon.name);
+    const id = `#${String(pokemon.id).padStart(3, '0')}`;
+
+    const types = pokemon.types
+        .sort((a, b) => a.slot - b.slot)
+        .map(t => t.type.name);
+
+    const { primaryColor, secondaryColor } = getTypeGradientColors(types);
+
+    const typeBadgesHtml = types
+        .map(typeName => `<span class="type-badge">${capitalize(typeName)}</span>`)
+        .join('');
+
+    const moves = pokemon.moves.slice(0, 4).map(m => m.move.name);
+    const movesHtml = moves
+        .map(moveName => `<li>${formatMoveName(moveName)}</li>`)
+        .join('');
+
+    const spriteUrl =
+        pokemon.sprites.other['official-artwork'].front_default ||
+        pokemon.sprites.front_default ||
+        '';
+
+    return `
+    <article
+      class="pokemon-card"
+      style="background: linear-gradient(135deg, ${primaryColor}, ${secondaryColor});"
+    >
+      <header class="pokemon-header">
+        <span class="pokemon-name">${name}</span>
+        <span class="pokemon-id">${id}</span>
+      </header>
+
+      <div class="pokemon-types">
+        ${typeBadgesHtml}
+      </div>
+
+      <div class="pokemon-sprite-wrapper">
+        <img
+          class="pokemon-sprite"
+          src="${spriteUrl}"
+          alt="${name}"
+        >
+      </div>
+
+      <section class="pokemon-moves">
+        <div class="moves-title">Moves</div>
+        <ul class="moves-list">
+          ${movesHtml}
+        </ul>
+      </section>
+    </article>
+  `;
+}
+
+function capitalize(text) {
+    if (!text) return '';
+    return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+function formatMoveName(moveName) {
+    return moveName
+        .split('-')
+        .map(part => capitalize(part))
+        .join(' ');
+}
+
+init();
