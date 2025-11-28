@@ -88,8 +88,6 @@ function getPokemonCardHTML(pokemon) {
     );
 }
 
-// Hilfsfunktion: Anzeige-Namen für Stats
-// Hilfsfunktion: Anzeige-Namen für Stats
 function getStatDisplayName(statName) {
     if (statName === 'hp') {
         return 'HP';
@@ -169,8 +167,8 @@ function getBaseStatsHTML(pokemon) {
 
     // Total-Zeile
     const total = pokemon.totalBaseStats;
-    const totalBarPercent = Math.min(100, Math.round((total / 780) * 100)); // 6*130 ~ mittlerer Wert
-    const totalColor = getStatColor(total / 6); // Durchschnitt einfärben
+    const totalBarPercent = Math.min(100, Math.round((total / 780) * 100));
+    const totalColor = getStatColor(total / 6);
 
     html = html
         + '<div class="stat-row stat-row-total">'
@@ -192,8 +190,8 @@ function getPokemonOverlayHTML(pokemon) {
     const formattedId = formatPokemonId(pokemon.id);
     const displayName = capitalize(pokemon.name);
 
-    const heightCm = pokemon.height * 10;   // API: decimetres -> cm
-    const weightKg = pokemon.weight / 10;   // API: hectograms -> kg
+    const heightCm = pokemon.height * 10;
+    const weightKg = pokemon.weight / 10;
     const abilitiesText = pokemon.abilities.join(', ');
 
     const baseStatsHTML = getBaseStatsHTML(pokemon);

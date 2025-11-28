@@ -6,7 +6,6 @@ const pokemonGridElement = document.getElementById('pokemon-grid');
 const overlayElement = document.getElementById('overlay');
 const overlayContentElement = document.getElementById('overlay-content');
 
-/* Wählt das beste Bild aus den API-Daten aus. */
 function getPokemonImageFromApi(apiPokemon) {
     const sprites = apiPokemon.sprites;
 
@@ -38,7 +37,6 @@ function createPokemonFromApiData(apiPokemon) {
         abilities.push(capitalize(abilityName));
     }
 
-    // Base Stats aus der API holen
     const baseStats = [];
     let totalBaseStats = 0;
 
