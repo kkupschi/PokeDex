@@ -196,65 +196,94 @@ function getPokemonOverlayHTML(pokemon) {
 
     const baseStatsHTML = getBaseStatsHTML(pokemon);
 
-    return ''
-        + '<article class="overlay-card">'
-        + '  <div class="overlay-top" style="' + backgroundStyle + '">'
-        + '    <div class="overlay-top-inner">'
-        + '      <h2 class="overlay-name">' + displayName + '</h2>'
-        + '      <span class="overlay-id">#' + formattedId + '</span>'
-        + '    </div>'
-        + '    <div class="overlay-types">' + typesHTML + '</div>'
-        + '    <div class="overlay-image-wrap">'
-        + '      <img class="overlay-image" src="' + pokemon.image + '" alt="' + displayName + '"/>'
-        + '    </div>'
-        + '  </div>'
-        + '  <div class="overlay-bottom">'
-        + '    <nav class="overlay-tabs">'
-        + '      <span class="overlay-tab overlay-tab--active" data-tab="about" onclick="showOverlayTab(\'about\')">About</span>'
-        + '      <span class="overlay-tab" data-tab="stats" onclick="showOverlayTab(\'stats\')">Base Stats</span>'
-        + '      <span class="overlay-tab" data-tab="gender" onclick="showOverlayTab(\'gender\')">Gender</span>'
-        + '      <span class="overlay-tab" data-tab="shiny" onclick="showOverlayTab(\'shiny\')">Shiny</span>'
-        + '    </nav>'
+    // Gender HTML
+    let genderHTML = 'Genderless';
+    if (pokemon.malePercent != null && pokemon.femalePercent != null) {
+        genderHTML =
+            '<span class="gender-icon male">♂</span>' +
+            ' <span class="gender-value">' + pokemon.malePercent.toFixed(1) + '%</span>' +
+            '&nbsp;&nbsp;' +
+            '<span class="gender-icon female">♀</span>' +
+            ' <span class="gender-value">' + pokemon.femalePercent.toFixed(1) + '%</span>';
+    }
 
-        // About-Section
-        + '    <div class="overlay-section overlay-section--active" data-section="about">'
-        + '      <div class="overlay-row"><span>Species</span><span>' + displayName + '</span></div>'
-        + '      <div class="overlay-row"><span>Height</span><span>' + heightCm + ' cm</span></div>'
-        + '      <div class="overlay-row"><span>Weight</span><span>' + weightKg + ' kg</span></div>'
-        + '      <div class="overlay-row"><span>Abilities</span><span>' + abilitiesText + '</span></div>'
-        + '    </div>'
+    const eggGroupsText = pokemon.eggGroupsText || '-';
+    const eggCycleText = pokemon.eggCycleText || '-';
 
-        // Base-Stats-Section
-        + '    <div class="overlay-section" data-section="stats">'
-        + '      <div class="stats-list">'
-        + baseStatsHTML
-        + '      </div>'
-        + '      <div class="stats-type-defenses-heading">Type defenses</div>'
-        + '      <p class="stats-type-defenses-text">'
-        + '        The effectiveness of each type on ' + displayName + '.'
-        + '      </p>'
-        + '    </div>'
+    return (
+        '<article class="overlay-card">' +
 
-        // Platzhalter für Gender & Shiny (später)
-        + '    <div class="overlay-section" data-section="gender">'
-        + '      <p>Gender details will be shown here.</p>'
-        + '    </div>'
-        + '    <div class="overlay-section" data-section="shiny">'
-        + '      <p>Shiny sprite and info will be shown here.</p>'
-        + '    </div>'
+        // TOP
+        '  <div class="overlay-top" style="' + backgroundStyle + '">' +
+        '    <div class="overlay-top-inner">' +
+        '      <h2 class="overlay-name">' + displayName + '</h2>' +
+        '      <div class="overlay-top-right">' +
+        '        <span class="overlay-id">#' + formattedId + '</span>' +
+        '        <button class="overlay-fav-button" type="button">❤</button>' +
+        '      </div>' +
+        '    </div>' +
+        '    <div class="overlay-types">' + typesHTML + '</div>' +
+        '    <div class="overlay-image-wrap">' +
+        '      <img class="overlay-image" src="' + pokemon.image + '" alt="' + displayName + '"/>' +
+        '    </div>' +
+        '  </div>' +
 
-        // Navigation Buttons
-        + '    <div class="overlay-nav-buttons">'
-        + '      <button class="overlay-nav-button" onclick="showPreviousPokemonInOverlay()">'
-        + '        <span class="overlay-nav-arrow">&larr;</span>'
-        + '        <span class="overlay-nav-label">Previous</span>'
-        + '      </button>'
-        + '      <button class="overlay-nav-button" onclick="showNextPokemonInOverlay()">'
-        + '        <span class="overlay-nav-label">Next</span>'
-        + '        <span class="overlay-nav-arrow">&rarr;</span>'
-        + '      </button>'
-        + '    </div>'
+        // BOTTOM
+        '  <div class="overlay-bottom">' +
 
-        + '  </div>'
-        + '</article>';
+        // Tabs
+        '    <nav class="overlay-tabs">' +
+        '      <span class="overlay-tab overlay-tab--active" data-tab="about" onclick="showOverlayTab(\'about\')">About</span>' +
+        '      <span class="overlay-tab" data-tab="stats" onclick="showOverlayTab(\'stats\')">Base Stats</span>' +
+        '      <span class="overlay-tab" data-tab="evolution" onclick="showOverlayTab(\'evolution\')">Evolution</span>' +
+        '      <span class="overlay-tab" data-tab="moves" onclick="showOverlayTab(\'moves\')">Moves</span>' +
+        '    </nav>' +
+
+        // ABOUT
+        '    <div class="overlay-section overlay-section--active" data-section="about">' +
+        '      <div class="overlay-row"><span>Species</span><span>' + displayName + '</span></div>' +
+        '      <div class="overlay-row"><span>Height</span><span>' + heightCm + ' cm</span></div>' +
+        '      <div class="overlay-row"><span>Weight</span><span>' + weightKg + ' kg</span></div>' +
+        '      <div class="overlay-row"><span>Abilities</span><span>' + abilitiesText + '</span></div>' +
+
+        '      <div class="overlay-breeding-heading">Breeding</div>' +
+        '      <div class="overlay-row"><span>Gender</span><span>' + genderHTML + '</span></div>' +
+        '      <div class="overlay-row"><span>Egg Groups</span><span>' + eggGroupsText + '</span></div>' +
+        '      <div class="overlay-row"><span>Egg Cycle</span><span>' + eggCycleText + '</span></div>' +
+        '    </div>' +
+
+        // BASE STATS
+        '    <div class="overlay-section" data-section="stats">' +
+        '      <div class="stats-list">' +
+        baseStatsHTML +
+        '      </div>' +
+        '      <div class="stats-type-defenses-heading">Type defenses</div>' +
+        '      <p class="stats-type-defenses-text">The effectiveness of each type on ' + displayName + '.</p>' +
+        '    </div>' +
+
+        // EVOLUTION (Platzhalter)
+        '    <div class="overlay-section" data-section="evolution">' +
+        '      <p>Evolution chain will be shown here.</p>' +
+        '    </div>' +
+
+        // MOVES (Platzhalter)
+        '    <div class="overlay-section" data-section="moves">' +
+        '      <p>Moves list will be shown here.</p>' +
+        '    </div>' +
+
+        // NAV BUTTONS
+        '    <div class="overlay-nav-buttons">' +
+        '      <button class="overlay-nav-button" onclick="showPreviousPokemonInOverlay()">' +
+        '        <span class="overlay-nav-arrow">&larr;</span>' +
+        '        <span class="overlay-nav-label">Previous</span>' +
+        '      </button>' +
+        '      <button class="overlay-nav-button" onclick="showNextPokemonInOverlay()">' +
+        '        <span class="overlay-nav-label">Next</span>' +
+        '        <span class="overlay-nav-arrow">&rarr;</span>' +
+        '      </button>' +
+        '    </div>' +
+
+        '  </div>' +
+        '</article>'
+    );
 }

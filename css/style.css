@@ -86,20 +86,7 @@ body {
     gap: 16px;
 }
 
-@media (max-width: 900px) {
-    .pokemon-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-}
-
-@media (max-width: 600px) {
-    .pokemon-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
 /* Kleine Pokémon-Karte */
-
 .pokemon-card {
     border-radius: 16px;
     padding: 12px;
@@ -189,7 +176,6 @@ body {
 }
 
 /* Card im Overlay */
-
 .overlay-card {
     background: #ffffff;
     color: #111827;
@@ -203,7 +189,6 @@ body {
 }
 
 /* Oberer Bereich */
-
 .overlay-top {
     position: relative;
     padding: 16px;
@@ -240,6 +225,35 @@ body {
 
 .overlay-fav-button:hover {
     background: rgba(0, 0, 0, 0.35);
+}
+
+/* Breeding Heading */
+.overlay-breeding-heading {
+    margin-top: 16px;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Gender Icons */
+.gender-icon {
+    font-size: 1.05rem;
+    font-weight: 700;
+    vertical-align: middle;
+}
+
+.gender-icon.male {
+    color: #3b82f6;
+}
+
+.gender-icon.female {
+    color: #ec4899;
+}
+
+.gender-value {
+    color: #050816;
+    font-weight: 500;
+    margin-right: 4px;
 }
 
 .overlay-name {
@@ -379,27 +393,6 @@ body {
     color: #6b7280;
 }
 
-/* Gender Icons */
-.gender-icon {
-    font-size: 1.05rem;
-    font-weight: 700;
-    vertical-align: middle;
-}
-
-.gender-icon.male {
-    color: #3b82f6;
-}
-
-.gender-icon.female {
-    color: #ec4899;
-}
-
-/* Gender Values */
-.gender-value {
-    color: #050816;
-    font-weight: 500;
-    margin-right: 4px;
-}
 
 /* Navigation-Buttons im Overlay */
 
@@ -497,4 +490,17 @@ body {
 
 .overlay-card--flip-right {
     animation: flip-right 0.4s ease;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .pokemon-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .pokemon-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
