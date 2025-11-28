@@ -111,6 +111,7 @@ body {
     cursor: pointer;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
     background: #9ca3af;
+    background-image: url('../img/pokeball.png');
 }
 
 .pokemon-card:hover {
@@ -142,9 +143,8 @@ body {
 }
 
 /* Typ-Badges */
-
 .type-badge {
-    padding: 4px 10px;
+    padding: 6px 10px;
     border-radius: 999px;
     font-size: 0.75rem;
     font-weight: 600;
@@ -276,16 +276,15 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background: #ffffff;
     padding: 20px 16px 16px;
+    background: #ffffff;
     flex: 1;
+    color: #050816;
     height: 100%;
 }
 
 .overlay-tabs {
     display: flex;
-    text-align: center;
-    justify-content: space-around;
     gap: 16px;
     font-size: 0.85rem;
     margin-bottom: 16px;
@@ -293,31 +292,91 @@ body {
 
 .overlay-tab {
     opacity: 0.6;
+    cursor: pointer;
 }
 
 .overlay-tab--active {
     opacity: 1;
     font-weight: 600;
+    border-bottom: 2px solid #3b82f6;
+    padding-bottom: 4px;
 }
 
 .overlay-section {
     font-size: 0.9rem;
     overflow-y: auto;
     flex: 1;
-    padding-right: 4px;
+    display: none;
 }
 
-.overlay-breeding-heading {
-    margin-top: 16px;
-    margin-bottom: 6px;
-    font-size: 0.9rem;
-    font-weight: 600;
+.overlay-section--active {
+    display: block;
 }
 
 .overlay-row {
     display: flex;
     justify-content: space-between;
     margin-bottom: 8px;
+}
+
+/* Base Stats List */
+
+.stats-list {
+    margin-top: 8px;
+    margin-bottom: 16px;
+}
+
+.stat-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.stat-label {
+    width: 80px;
+    font-size: 0.85rem;
+    color: #4b5563;
+}
+
+.stat-number {
+    width: 40px;
+    text-align: right;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.stat-bar-track {
+    flex: 1;
+    height: 4px;
+    background: #e5e7eb;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.stat-bar-fill {
+    height: 100%;
+    width: 0;
+    background: #22c55e;
+}
+
+.stat-row-total {
+    margin-top: 10px;
+}
+
+/* Type defenses Text */
+
+.stats-type-defenses-heading {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.stats-type-defenses-text {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #6b7280;
 }
 
 /* Gender Icons */

@@ -35,17 +35,7 @@ function getStatColor(base) {
 // ID als 4-stellige Zahl formatieren (1 -> 0001)
 function formatPokemonId(id) {
     const idString = String(id);
-
-    if (idString.length === 1) {
-        return '00' + idString;
-    }
-
-    if (idString.length === 2) {
-        return '0' + idString;
-    }
-
-    return idString;
-    // return idString.padStart(4, '0');
+    return idString.padStart(4, '0');
 }
 
 // Erstes Zeichen groß machen
