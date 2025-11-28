@@ -25,7 +25,7 @@ function getPokemonImageFromApi(apiPokemon) {
     return defaultSprite;
 }
 
-function createPokemonFromApiData(apiPokemon) {
+function createPokemonFromApiData(apiPokemon, apiSpecies) {
     const types = [];
     for (let i = 0; i < apiPokemon.types.length; i++) {
         const typeName = apiPokemon.types[i].type.name;
@@ -38,6 +38,39 @@ function createPokemonFromApiData(apiPokemon) {
         abilities.push(capitalize(abilityName));
     }
 
+    let genderText = 'Genderless';
+    let malePercent = null;
+    let femalePercent = null;
+
+    if (apiSpecies && typeof apiSpecies.gender_rate === 'number' && apiSpecies.gender_rate >= 0) {
+        const female = (apiSpecies.gender_rate / 8) * 100;
+        const male = 100 - female;
+
+        malePercent = male;
+        femalePercent = female;
+
+        genderText =
+            '♂ ' + male.toFixed(1) + '%  |  ' +
+            '♀ ' + female.toFixed(1) + '%';
+    }
+
+    let eggGroupsText = '-';
+    if (apiSpecies && Array.isArray(apiSpecies.egg_groups)) {
+        const eggGroups = [];
+        for (let k = 0; k < apiSpecies.egg_groups.length; k++) {
+            const groupName = apiSpecies.egg_groups[k].name;
+            eggGroups.push(capitalize(groupName));
+        }
+        if (eggGroups.length > 0) {
+            eggGroupsText = eggGroups.join(', ');
+        }
+    }
+
+    let eggCycleText = '-';
+    if (apiSpecies && typeof apiSpecies.hatch_counter === 'number') {
+        eggCycleText = apiSpecies.hatch_counter + ' cycles';
+    }
+
     const pokemon = {
         id: apiPokemon.id,
         name: apiPokemon.name,
@@ -46,7 +79,13 @@ function createPokemonFromApiData(apiPokemon) {
 
         height: apiPokemon.height,
         weight: apiPokemon.weight,
-        abilities: abilities
+        abilities: abilities,
+
+        genderText: genderText,
+        malePercent: malePercent,
+        femalePercent: femalePercent,
+        eggGroupsText: eggGroupsText,
+        eggCycleText: eggCycleText
     };
 
     return pokemon;
@@ -64,22 +103,28 @@ function renderPokemonGrid(pokemonArray) {
 }
 
 function loadSinglePokemon(id) {
-    const url = 'https://pokeapi.co/api/v2/pokemon/' + id;
+    const pokemonUrl = 'https://pokeapi.co/api/v2/pokemon/' + id;
+    const speciesUrl = 'https://pokeapi.co/api/v2/pokemon-species/' + id;
 
-    fetch(url)
+    fetch(pokemonUrl)
         .then(function (response) {
             return response.json();
         })
-        .then(function (data) {
-            const pokemon = createPokemonFromApiData(data);
+        .then(function (pokemonData) {
+            return fetch(speciesUrl)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (speciesData) {
+                    const pokemon = createPokemonFromApiData(pokemonData, speciesData);
 
-            pokemonList.push(pokemon);
+                    pokemonList.push(pokemon);
+                    pokemonList.sort(function (a, b) {
+                        return a.id - b.id;
+                    });
 
-            pokemonList.sort(function (a, b) {
-                return a.id - b.id;
-            });
-
-            renderPokemonGrid(pokemonList);
+                    renderPokemonGrid(pokemonList);
+                });
         })
         .catch(function (error) {
             console.log('Fehler beim Laden von Pokémon mit ID ' + id, error);
