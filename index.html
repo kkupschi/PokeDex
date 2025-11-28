@@ -2,49 +2,53 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Pokedex</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokédex</title>
+
+    <link rel="stylesheet" href="css/fonts.css" />
+    <link rel="stylesheet" href="css/style.css" />
 </head>
 
 <body>
-    <header class="app-header">
-        <div class="logo-circle">P</div>
-        <h1 class="app-title">Pokedex</h1>
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">Pokédex</div>
+        </div>
     </header>
 
-    <main class="app-main">
-        <section class="controls">
-            <button id="loadGen1Btn" class="primary-btn">
-                Load Gen 1 (Demo)
-            </button>
-
-            <button id="loadMoreBtn" class="secondary-btn">
-                Load more Pokémon
-            </button>
+    <main class="main">
+        <section id="start-screen" class="start-screen">
+            <h1 class="gameboy-title">Select your generation</h1>
+            <div class="generation-buttons">
+                <button class="gen-button">Gen 1</button>
+                <button class="gen-button">Gen 2</button>
+                <button class="gen-button">Gen 3</button>
+                <button class="gen-button">Gen 4</button>
+                <button class="gen-button">Gen 5</button>
+                <button class="gen-button">Gen 6</button>
+                <button class="gen-button">Gen 7</button>
+                <button class="gen-button">Gen 8</button>
+                <button class="gen-button">Gen 9</button>
+                <button class="gen-button gen-all">All Pokémon</button>
+            </div>
         </section>
 
-        <section id="cardGrid" class="card-grid">
+        <!-- Pokédex-Bereich -->
+        <section id="pokedex" class="pokedex">
+            <div id="pokemon-grid" class="pokemon-grid">
+            </div>
         </section>
-        <div id="overlay" class="overlay">
-            <div class="overlay-inner">
-                <button id="closeOverlayBtn" class="overlay-close">✕</button>
 
-                <div id="overlayContent"></div>
-
-                <div class="overlay-card-wrapper">
-                    <article id="overlayCard" class="overlay-card"></article>
-                </div>
-
-                <div class="overlay-nav">
-                    <button id="prevBtn" class="nav-btn">‹</button>
-                    <button id="nextBtn" class="nav-btn">›</button>
-                </div>
+        <!-- Overlay (große Ansicht) -->
+        <div id="overlay" class="overlay hidden" onclick="handleOverlayClick(event)">
+            <div id="overlay-content" class="overlay-content">
             </div>
         </div>
     </main>
 
     <script src="db.js"></script>
+    <script src="template.js"></script>
     <script src="script.js"></script>
 </body>
 

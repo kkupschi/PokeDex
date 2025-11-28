@@ -1,15 +1,3 @@
-const GENERATION_RANGES = {
-    1: { name: 'Kanto', startId: 1, endId: 151 },
-    2: { name: 'Johto', startId: 152, endId: 251 },
-    3: { name: 'Hoenn', startId: 252, endId: 386 },
-    4: { name: 'Sinnoh', startId: 387, endId: 493 },
-    5: { name: 'Unova', startId: 494, endId: 649 },
-    6: { name: 'Kalos', startId: 650, endId: 721 },
-    7: { name: 'Alola', startId: 722, endId: 809 },
-    8: { name: 'Galar', startId: 810, endId: 898 },
-    9: { name: 'Paldea', startId: 899, endId: 1025 }
-};
-
 const TYPE_COLORS = {
     normal: '#A8A77A',
     fire: '#EE8130',
@@ -28,15 +16,42 @@ const TYPE_COLORS = {
     dragon: '#6F35FC',
     dark: '#705746',
     steel: '#B7B7CE',
-    fairy: '#D685AD',
+    fairy: '#D685AD'
 };
 
-function getTypeGradientColors(types) {
-    const primaryType = types[0] || 'normal';
-    const secondaryType = types[1] || types[0] || 'normal';
+// Base-Stats
+function getStatColor(base) {
+    if (base <= 79) {
+        return '#5bc0de';
+    } else if (base <= 109) {
+        return '#28a745';
+    } else if (base <= 149) {
+        return '#ffc107';
+    } else {
+        return '#dc3545';
+    }
+}
 
-    const primaryColor = TYPE_COLORS[primaryType] || '#9ca3af';
-    const secondaryColor = TYPE_COLORS[secondaryType] || primaryColor;
+// ID als 3-stellige Zahl formatieren (1 -> 001)
+function formatPokemonId(id) {
+    const idString = String(id);
 
-    return { primaryColor, secondaryColor };
-};
+    if (idString.length === 1) {
+        return '00' + idString;
+    }
+
+    if (idString.length === 2) {
+        return '0' + idString;
+    }
+
+    return idString;
+}
+
+// Erstes Zeichen groß machen
+function capitalize(text) {
+    if (!text) {
+        return '';
+    }
+
+    return text.charAt(0).toUpperCase() + text.slice(1);
+}
