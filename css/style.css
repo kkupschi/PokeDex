@@ -167,7 +167,6 @@ body {
 }
 
 /* Overlay */
-
 .overlay {
     position: fixed;
     inset: 0;
@@ -182,28 +181,26 @@ body {
 .overlay-content {
     width: 100%;
     max-width: 420px;
-    max-height: 95vh;
-    border-radius: 24px;
+    max-height: 90vh;
+    border-radius: 32px;
     background: transparent;
     overflow: visible;
     perspective: 1000px;
 }
 
-*/ */
 /* Card im Overlay */
 
 .overlay-card {
-    border-radius: 24px;
     background: #ffffff;
-    overflow-y: auto;
-    overflow-x: hidden;
+    color: #111827;
+    border-radius: 32px;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    min-height: 520px;
-    max-height: 95vh;
+    min-height: 560px;
+    max-height: 90vh;
     transform-style: preserve-3d;
 }
-
 
 /* Oberer Bereich */
 
@@ -250,11 +247,14 @@ body {
 /* Unterer Bereich */
 
 .overlay-bottom {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     background: #ffffff;
-    color: #111827;
     padding: 20px 16px 16px;
+    flex: 1;
+    height: 100%;
 }
-
 
 .overlay-tabs {
     display: flex;
@@ -274,6 +274,9 @@ body {
 
 .overlay-section {
     font-size: 0.9rem;
+    overflow-y: auto;
+    flex: 1;
+    padding-right: 4px;
 }
 
 .overlay-row {
@@ -288,7 +291,9 @@ body {
     display: flex;
     justify-content: space-between;
     gap: 12px;
-    margin-top: 20px;
+    margin-top: 24px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .overlay-nav-button {
@@ -349,10 +354,6 @@ body {
 }
 
 /* Flip-Animationen für Overlay-Karte */
-
-.overlay-card {
-    transform-style: preserve-3d;
-}
 
 @keyframes flip-left {
     from {

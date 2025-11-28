@@ -129,17 +129,12 @@ function showPokemonInOverlayByIndex(index, direction) {
 
 function openPokemonOverlay(id) {
     const index = findPokemonIndexById(id);
-
     if (index === -1) {
         return;
     }
-
     showPokemonInOverlayByIndex(index, null);
-
     overlayElement.classList.remove('hidden');
-
     lastScrollY = window.scrollY || window.pageYOffset;
-
     document.body.style.position = 'fixed';
     document.body.style.top = `-${lastScrollY}px`;
     document.body.style.left = '0';
@@ -157,11 +152,9 @@ function closeOverlay() {
 
 function showPreviousPokemonInOverlay() {
     const newIndex = currentOverlayIndex - 1;
-
     if (newIndex < 0) {
         return;
     }
-
     showPokemonInOverlayByIndex(newIndex, 'left');
 }
 
