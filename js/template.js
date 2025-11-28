@@ -129,7 +129,8 @@ function getPokemonOverlayHTML(pokemon) {
         '    <nav class="overlay-tabs">' +
         '      <span class="overlay-tab overlay-tab--active">About</span>' +
         '      <span class="overlay-tab">Base Stats</span>' +
-        '      <span class="overlay-tab">Gender</span>' +
+        '      <span class="overlay-tab">Evolution</span>' +
+        '      <span class="overlay-tab">Moves</span>' +
         '      <span class="overlay-tab">Shiny</span>' +
         '    </nav>' +
 
@@ -148,14 +149,16 @@ function getPokemonOverlayHTML(pokemon) {
         '      </div>' +
 
         '      <div class="overlay-row">' +
-        '        <span>Abilities</span><span>' + abilitiesText + '</span>' +
-        '      </div>' +
-
-        '      <div class="overlay-breeding-heading">Breeding</div>' +
-
-        '      <div class="overlay-row">' +
-        '        <span>Gender</span><span>' + genderText + '</span>' +
-        '      </div>' +
+        '        <span>Gender</span>' +
+        '        <span>' +
+        '          <span class="gender-icon male">♂</span>' +
+        '          <span class="gender-value">' + pokemon.malePercent.toFixed(1) + '%</span>' +
+        '          &nbsp;&nbsp;' +
+        '          <span class="gender-icon female">♀</span>' +
+        '          <span class="gender-value">' + pokemon.femalePercent.toFixed(1) + '%</span>' +
+        '        </span>' +
+        '      </div>'
+        +
 
         '      <div class="overlay-row">' +
         '        <span>Egg Groups</span><span>' + eggGroupsText + '</span>' +
