@@ -14,6 +14,7 @@ let favouriteIds = [];
 const searchInputElement = document.getElementById('search-input');
 const searchMessageElement = document.getElementById('search-message');
 let currentFilterMode = 'all';
+let currentGenerationFilter = null;
 
 function getPokemonImageFromApi(apiPokemon) {
     const sprites = apiPokemon.sprites;
@@ -178,6 +179,76 @@ function getFavouritePokemonList() {
     return result;
 }
 
+function isPokemonLoaded(id) {
+    for (let i = 0; i < pokemonList.length; i++) {
+        if (pokemonList[i].id === id) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function countLoadedInRange(range) {
+    let count = 0;
+
+    for (let i = 0; i < pokemonList.length; i++) {
+        const pokemon = pokemonList[i];
+
+        if (pokemon.id >= range.start && pokemon.id <= range.end) {
+            count++;
+        }
+    }
+
+    return count;
+}
+
+function ensureGenerationLoaded(generation, minCount) {
+    const range = GENERATION_RANGES[generation];
+
+    if (!range) {
+        return;
+    }
+
+    const alreadyLoaded = countLoadedInRange(range);
+
+    if (alreadyLoaded >= minCount) {
+        return;
+    }
+
+    let remaining = minCount - alreadyLoaded;
+
+    for (let id = range.start; id <= range.end && remaining > 0; id++) {
+        if (!isPokemonLoaded(id)) {
+            loadSinglePokemon(id);
+            remaining--;
+        }
+    }
+}
+
+function filterListByGeneration(list, generation) {
+    const range = GENERATION_RANGES[generation];
+
+    if (!range) {
+        return list;
+    }
+
+    const result = [];
+
+    for (let i = 0; i < list.length; i++) {
+        const pokemon = list[i];
+
+        if (
+            pokemon.id >= range.start &&
+            pokemon.id <= range.end
+        ) {
+            result.push(pokemon);
+        }
+    }
+
+    return result;
+}
+
 function getIdFromSpeciesUrl(url) {
     const parts = url.split('/');
     for (let i = parts.length - 1; i >= 0; i--) {
@@ -282,19 +353,18 @@ function loadSinglePokemon(id) {
                     return response.json();
                 })
                 .then(function (speciesData) {
-                    return loadEvolutionChainForSpecies(speciesData)
-                        .then(function (evolutionChain) {
-                            const pokemon = createPokemonFromApiData(
-                                pokemonData,
-                                speciesData,
-                                evolutionChain
-                            );
-                            pokemonList.push(pokemon);
-                            pokemonList.sort(function (a, b) {
-                                return a.id - b.id;
-                            });
-                            renderPokemonGrid(pokemonList);
-                        });
+                    const pokemon = createPokemonFromApiData(
+                        pokemonData,
+                        speciesData
+                    );
+
+                    pokemonList.push(pokemon);
+                    pokemonList.sort(function (a, b) {
+                        return a.id - b.id;
+                    });
+
+                    const baseList = getBaseListForCurrentFilter();
+                    renderPokemonGrid(baseList);
                 });
         })
         .catch(function (error) {
@@ -418,15 +488,28 @@ function showOverlayTab(tabName) {
 
 function showAllPokemon() {
     currentFilterMode = 'all';
+    currentGenerationFilter = null;
     resetSearch();
     renderPokemonGrid(pokemonList);
 }
 
 function showFavouritePokemon() {
     currentFilterMode = 'favourites';
+    currentGenerationFilter = null;
     resetSearch();
     const favourites = getFavouritePokemonList();
     renderPokemonGrid(favourites);
+}
+
+function showGeneration(generation) {
+    currentFilterMode = 'generation';
+    currentGenerationFilter = generation;
+    resetSearch();
+
+    ensureGenerationLoaded(generation, 30);
+
+    const baseList = getBaseListForCurrentFilter();
+    renderPokemonGrid(baseList);
 }
 
 function loadInitialPokemon() {
@@ -473,11 +556,23 @@ function resetSearch() {
 }
 
 function getBaseListForCurrentFilter() {
+    let baseList = pokemonList;
+
     if (currentFilterMode === 'favourites') {
-        return getFavouritePokemonList();
+        baseList = getFavouritePokemonList();
     }
 
-    return pokemonList;
+    if (
+        currentFilterMode === 'generation' &&
+        currentGenerationFilter !== null
+    ) {
+        baseList = filterListByGeneration(
+            baseList,
+            currentGenerationFilter
+        );
+    }
+
+    return baseList;
 }
 
 function filterPokemonListByName(list, term) {
