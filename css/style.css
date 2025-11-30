@@ -290,12 +290,12 @@ body {
 .overlay-bottom {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     padding: 20px 16px 16px;
     background: #ffffff;
     flex: 1;
     color: #050816;
     height: 100%;
+    overflow: hidden;
 }
 
 .overlay-tabs {
@@ -322,6 +322,7 @@ body {
     overflow-y: auto;
     flex: 1;
     display: none;
+    padding-right: 4px;
 }
 
 .overlay-section--active {
@@ -427,8 +428,42 @@ body {
     margin-top: 8px;
 }
 
-/* Type defenses Text */
+/* Moves */
+.moves-list {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
 
+.move-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 0.85rem;
+}
+
+.move-level {
+    width: 70px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.move-name {
+    flex: 1;
+    text-align: left;
+    font-weight: 600;
+}
+
+.moves-empty {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+/* Type defenses Text */
 .stats-type-defenses-heading {
     margin-top: 4px;
     margin-bottom: 4px;

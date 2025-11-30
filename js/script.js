@@ -109,6 +109,41 @@ function getBreedingInfoFromSpecies(apiSpecies) {
     };
 }
 
+function getLevelUpMovesFromApi(apiPokemon) {
+    const result = [];
+    const moves = apiPokemon.moves || [];
+
+    for (let i = 0; i < moves.length; i++) {
+        const moveEntry = moves[i];
+        const details = moveEntry.version_group_details;
+
+        if (!details || details.length === 0) {
+            continue;
+        }
+
+        const first = details[0];
+
+        if (first.move_learn_method.name !== 'level-up') {
+            continue;
+        }
+
+        if (!first.level_learned_at) {
+            continue;
+        }
+
+        result.push({
+            name: moveEntry.move.name,
+            level: first.level_learned_at
+        });
+    }
+
+    result.sort(function (a, b) {
+        return a.level - b.level;
+    });
+
+    return result;
+}
+
 function loadFavouritesFromStorage() {
     const raw = localStorage.getItem('pokedex_favourites');
     if (!raw) {
@@ -218,6 +253,7 @@ function createPokemonFromApiData(apiPokemon, apiSpecies, evolutionChain) {
     const abilities = getAbilitiesFromApi(apiPokemon);
     const baseStatsInfo = getBaseStatsFromApi(apiPokemon);
     const breedingInfo = getBreedingInfoFromSpecies(apiSpecies);
+    const moves = getLevelUpMovesFromApi(apiPokemon);
 
     return {
         id: apiPokemon.id,
@@ -233,7 +269,8 @@ function createPokemonFromApiData(apiPokemon, apiSpecies, evolutionChain) {
         femalePercent: breedingInfo.femalePercent,
         eggGroupsText: breedingInfo.eggGroupsText,
         eggCycleText: breedingInfo.eggCycleText,
-        evolutionChain: evolutionChain
+        evolutionChain: evolutionChain,
+        moves: moves
     };
 }
 

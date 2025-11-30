@@ -224,6 +224,50 @@ function getEvolutionHTML(pokemon) {
     return html;
 }
 
+
+// Moves
+function formatMoveName(name) {
+    const parts = name.split('-');
+
+    for (let i = 0; i < parts.length; i++) {
+        const part = parts[i];
+
+        if (part.length === 0) {
+            continue;
+        }
+
+        parts[i] = part.charAt(0).toUpperCase() + part.slice(1);
+    }
+
+    return parts.join(' ');
+}
+
+function getMovesHTML(pokemon) {
+    const moves = pokemon.moves || [];
+
+    if (moves.length === 0) {
+        return '<p class="moves-empty">No moves available.</p>';
+    }
+
+    const maxCount = moves.length > 12 ? 12 : moves.length;
+    let html = '<div class="moves-list">';
+
+    for (let i = 0; i < maxCount; i++) {
+        const move = moves[i];
+        const label = formatMoveName(move.name);
+
+        html = html
+            + '<div class="move-row">'
+            + '  <span class="move-level">Lv. ' + move.level + '</span>'
+            + '  <span class="move-name">' + label + '</span>'
+            + '</div>';
+    }
+
+    html = html + '</div>';
+
+    return html;
+}
+
 // Overlay-Inhalt (große Karte)
 function getPokemonOverlayHTML(pokemon) {
     const backgroundStyle = getCardBackgroundStyle(pokemon.types);
@@ -318,7 +362,7 @@ function getPokemonOverlayHTML(pokemon) {
 
         // MOVES (Platzhalter – füllen wir später)
         '    <div class="overlay-section" data-section="moves">' +
-        '      <p>Moves list will be shown here.</p>' +
+        getMovesHTML(pokemon) +
         '    </div>' +
 
         // NAV BUTTONS
