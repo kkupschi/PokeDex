@@ -1,10 +1,15 @@
 const INITIAL_POKEMON_COUNT = 30;
+const LOAD_MORE_COUNT = 30;
 const pokemonList = [];
 let currentOverlayIndex = 0;
 let lastScrollY = 0;
+let nextPokemonId = INITIAL_POKEMON_COUNT + 1;
+let isLoadingMore = false;
 const pokemonGridElement = document.getElementById('pokemon-grid');
 const overlayElement = document.getElementById('overlay');
 const overlayContentElement = document.getElementById('overlay-content');
+const loadMoreButtonElement = document.getElementById('load-more-button');
+const loadMoreLoaderElement = document.getElementById('load-more-loader');
 let favouriteIds = [];
 
 function getPokemonImageFromApi(apiPokemon) {
@@ -440,6 +445,31 @@ function loadInitialPokemon() {
     for (let id = 1; id <= INITIAL_POKEMON_COUNT; id++) {
         loadSinglePokemon(id);
     }
+}
+
+function handleLoadMoreClick() {
+    if (isLoadingMore) {
+        return;
+    }
+
+    isLoadingMore = true;
+    loadMoreButtonElement.disabled = true;
+    loadMoreLoaderElement.classList.remove('hidden');
+
+    const startId = nextPokemonId;
+    const endId = nextPokemonId + LOAD_MORE_COUNT - 1;
+
+    for (let id = startId; id <= endId; id++) {
+        loadSinglePokemon(id);
+    }
+
+    nextPokemonId = endId + 1;
+
+    setTimeout(function () {
+        isLoadingMore = false;
+        loadMoreButtonElement.disabled = false;
+        loadMoreLoaderElement.classList.add('hidden');
+    }, 1000);
 }
 
 /* ===== Startpunkt ===== */

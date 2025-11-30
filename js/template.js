@@ -360,7 +360,7 @@ function getPokemonOverlayHTML(pokemon) {
         getEvolutionHTML(pokemon) +
         '    </div>' +
 
-        // MOVES (Platzhalter – füllen wir später)
+        // MOVES
         '    <div class="overlay-section" data-section="moves">' +
         getMovesHTML(pokemon) +
         '    </div>' +

@@ -39,7 +39,14 @@
         </section>
         <!-- Pokédex-Bereich -->
         <section id="pokedex" class="pokedex">
-            <div id="pokemon-grid" class="pokemon-grid">
+            <div id="pokemon-grid" class="pokemon-grid"></div>
+            <div class="load-more-wrapper">
+                <button id="load-more-button" class="load-more-button" onclick="handleLoadMoreClick()">
+                    Load more Pokémon
+                </button>
+                <div id="load-more-loader" class="load-more-loader hidden">
+                    <img src="img/pokeball.png" alt="Loading" class="loader-ball" />
+                </div>
             </div>
         </section>
         <!-- Overlay (große Ansicht) -->
