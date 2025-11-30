@@ -1,0 +1,23 @@
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore editor folders
+.vscode/
+.idea/
+
+# Ignore temporary files
+*.log
+
+# Ignore build or cache folders (falls du später was baust)
+dist/
+build/
+
+# Ignore environment files (Falls später irgendwas mit API-Keys kommt)
+.env
+.env.local
+.env.*.local
+
+# Ignore OS-level cache
+*.tmp
+*.cache
