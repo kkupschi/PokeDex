@@ -24,20 +24,29 @@ function getPokemonImageFromApi(apiPokemon) {
     return defaultSprite;
 }
 
-function createPokemonFromApiData(apiPokemon, apiSpecies) {
+function getTypesFromApi(apiPokemon) {
     const types = [];
+
     for (let i = 0; i < apiPokemon.types.length; i++) {
         const typeName = apiPokemon.types[i].type.name;
         types.push(typeName);
     }
 
+    return types;
+}
+
+function getAbilitiesFromApi(apiPokemon) {
     const abilities = [];
+
     for (let j = 0; j < apiPokemon.abilities.length; j++) {
         const abilityName = apiPokemon.abilities[j].ability.name;
         abilities.push(capitalize(abilityName));
     }
 
-    // Base Stats
+    return abilities;
+}
+
+function getBaseStatsFromApi(apiPokemon) {
     const baseStats = [];
     let totalBaseStats = 0;
 
@@ -54,12 +63,17 @@ function createPokemonFromApiData(apiPokemon, apiSpecies) {
         });
     }
 
-    // Breeding: Gender
+    return {
+        baseStats: baseStats,
+        totalBaseStats: totalBaseStats
+    };
+}
+
+function getBreedingInfoFromSpecies(apiSpecies) {
     let malePercent = null;
     let femalePercent = null;
 
     if (apiSpecies && typeof apiSpecies.gender_rate === 'number') {
-        // -1 = genderless, sonst 0–8 (Anteil weiblich in Achteln)
         if (apiSpecies.gender_rate >= 0) {
             const female = (apiSpecies.gender_rate / 8) * 100;
             const male = 100 - female;
@@ -69,45 +83,53 @@ function createPokemonFromApiData(apiPokemon, apiSpecies) {
         }
     }
 
-    // Breeding: Egg Groups
     let eggGroupsText = '-';
+
     if (apiSpecies && Array.isArray(apiSpecies.egg_groups)) {
         const eggGroups = [];
+
         for (let g = 0; g < apiSpecies.egg_groups.length; g++) {
             const groupName = apiSpecies.egg_groups[g].name;
             eggGroups.push(capitalize(groupName));
         }
+
         if (eggGroups.length > 0) {
             eggGroupsText = eggGroups.join(', ');
         }
     }
 
-    // Breeding: Egg Cycle
     let eggCycleText = '-';
+
     if (apiSpecies && typeof apiSpecies.hatch_counter === 'number') {
         eggCycleText = apiSpecies.hatch_counter + ' cycles';
     }
 
-    const pokemon = {
-        id: apiPokemon.id,
-        name: apiPokemon.name,
-        types: types,
-        image: getPokemonImageFromApi(apiPokemon),
-
-        height: apiPokemon.height,
-        weight: apiPokemon.weight,
-        abilities: abilities,
-
-        baseStats: baseStats,
-        totalBaseStats: totalBaseStats,
-
+    return {
         malePercent: malePercent,
         femalePercent: femalePercent,
         eggGroupsText: eggGroupsText,
         eggCycleText: eggCycleText
     };
+}
 
-    return pokemon;
+function createPokemonFromApiData(apiPokemon, apiSpecies) {
+    const types = getTypesFromApi(apiPokemon);
+    const abilities = getAbilitiesFromApi(apiPokemon);
+    const baseStatsInfo = getBaseStatsFromApi(apiPokemon);
+    const breedingInfo = getBreedingInfoFromSpecies(apiSpecies);
+
+    return {
+        id: apiPokemon.id, name: apiPokemon.name, types: types,
+        image: getPokemonImageFromApi(apiPokemon),
+        height: apiPokemon.height, weight: apiPokemon.weight,
+        abilities: abilities,
+        baseStats: baseStatsInfo.baseStats,
+        totalBaseStats: baseStatsInfo.totalBaseStats,
+        malePercent: breedingInfo.malePercent,
+        femalePercent: breedingInfo.femalePercent,
+        eggGroupsText: breedingInfo.eggGroupsText,
+        eggCycleText: breedingInfo.eggCycleText
+    };
 }
 
 function renderPokemonGrid(pokemonArray) {
@@ -136,12 +158,10 @@ function loadSinglePokemon(id) {
                 })
                 .then(function (speciesData) {
                     const pokemon = createPokemonFromApiData(pokemonData, speciesData);
-
                     pokemonList.push(pokemon);
                     pokemonList.sort(function (a, b) {
                         return a.id - b.id;
                     });
-
                     renderPokemonGrid(pokemonList);
                 });
         })
@@ -150,14 +170,7 @@ function loadSinglePokemon(id) {
         });
 }
 
-function loadInitialPokemon() {
-    for (let id = 1; id <= INITIAL_POKEMON_COUNT; id++) {
-        loadSinglePokemon(id);
-    }
-}
-
 /* ===== Overlay-Logik ===== */
-
 function findPokemonIndexById(id) {
     for (let i = 0; i < pokemonList.length; i++) {
         if (pokemonList[i].id === id) {
