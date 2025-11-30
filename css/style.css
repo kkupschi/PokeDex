@@ -174,14 +174,14 @@ body {
 
 /* Card im Overlay */
 .overlay-card {
+    height: 700px;
+    max-height: 92vh;
+    min-height: 700px;
     background: #ffffff;
-    color: #111827;
     border-radius: 32px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    min-height: 560px;
-    max-height: 90vh;
     transform-style: preserve-3d;
 }
 
@@ -382,9 +382,10 @@ body {
 .evolution-chain {
     display: flex;
     align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-top: 8px;
+    gap: 24px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 8px;
 }
 
 .evolution-entry {
@@ -395,8 +396,8 @@ body {
 }
 
 .evolution-image-wrap {
-    width: 64px;
-    height: 64px;
+    width: 80px;
+    height: 80px;
     border-radius: 999px;
     background: #f3f4f6;
     display: flex;
@@ -406,8 +407,8 @@ body {
 }
 
 .evolution-image {
-    max-width: 56px;
-    max-height: 56px;
+    max-width: 72px;
+    max-height: 72px;
 }
 
 .evolution-label {
@@ -415,8 +416,9 @@ body {
 }
 
 .evolution-arrow {
-    font-size: 1.2rem;
-    opacity: 0.7;
+    font-size: 1.4rem;
+    opacity: 0.5;
+    user-select: none;
 }
 
 .evolution-empty {
