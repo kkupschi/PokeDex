@@ -339,7 +339,6 @@ function getPokemonOverlayHTML(pokemon) {
         '      <div class="overlay-row"><span>Height</span><span>' + heightCm + ' cm</span></div>' +
         '      <div class="overlay-row"><span>Weight</span><span>' + weightKg + ' kg</span></div>' +
         '      <div class="overlay-row"><span>Abilities</span><span>' + abilitiesText + '</span></div>' +
-
         '      <div class="overlay-breeding-heading">Breeding</div>' +
         '      <div class="overlay-row"><span>Gender</span><span>' + genderHTML + '</span></div>' +
         '      <div class="overlay-row"><span>Egg Groups</span><span>' + eggGroupsText + '</span></div>' +
@@ -376,7 +375,6 @@ function getPokemonOverlayHTML(pokemon) {
         '        <span class="overlay-nav-arrow">&rarr;</span>' +
         '      </button>' +
         '    </div>' +
-
         '  </div>' +
         '</article>'
     );

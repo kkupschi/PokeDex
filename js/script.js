@@ -11,6 +11,9 @@ const overlayContentElement = document.getElementById('overlay-content');
 const loadMoreButtonElement = document.getElementById('load-more-button');
 const loadMoreLoaderElement = document.getElementById('load-more-loader');
 let favouriteIds = [];
+const searchInputElement = document.getElementById('search-input');
+const searchMessageElement = document.getElementById('search-message');
+let currentFilterMode = 'all';
 
 function getPokemonImageFromApi(apiPokemon) {
     const sprites = apiPokemon.sprites;
@@ -28,43 +31,35 @@ function getPokemonImageFromApi(apiPokemon) {
 
 function getTypesFromApi(apiPokemon) {
     const types = [];
-
     for (let i = 0; i < apiPokemon.types.length; i++) {
         const typeName = apiPokemon.types[i].type.name;
         types.push(typeName);
     }
-
     return types;
 }
 
 function getAbilitiesFromApi(apiPokemon) {
     const abilities = [];
-
     for (let j = 0; j < apiPokemon.abilities.length; j++) {
         const abilityName = apiPokemon.abilities[j].ability.name;
         abilities.push(capitalize(abilityName));
     }
-
     return abilities;
 }
 
 function getBaseStatsFromApi(apiPokemon) {
     const baseStats = [];
     let totalBaseStats = 0;
-
     for (let k = 0; k < apiPokemon.stats.length; k++) {
         const apiStat = apiPokemon.stats[k];
         const statName = apiStat.stat.name;
         const baseValue = apiStat.base_stat;
-
         totalBaseStats = totalBaseStats + baseValue;
-
         baseStats.push({
             name: statName,
             value: baseValue
         });
     }
-
     return {
         baseStats: baseStats,
         totalBaseStats: totalBaseStats
@@ -74,38 +69,29 @@ function getBaseStatsFromApi(apiPokemon) {
 function getBreedingInfoFromSpecies(apiSpecies) {
     let malePercent = null;
     let femalePercent = null;
-
     if (apiSpecies && typeof apiSpecies.gender_rate === 'number') {
         if (apiSpecies.gender_rate >= 0) {
             const female = (apiSpecies.gender_rate / 8) * 100;
             const male = 100 - female;
-
             malePercent = male;
             femalePercent = female;
         }
     }
-
     let eggGroupsText = '-';
-
     if (apiSpecies && Array.isArray(apiSpecies.egg_groups)) {
         const eggGroups = [];
-
         for (let i = 0; i < apiSpecies.egg_groups.length; i++) {
             const groupName = apiSpecies.egg_groups[i].name;
             eggGroups.push(capitalize(groupName));
         }
-
         if (eggGroups.length > 0) {
             eggGroupsText = eggGroups.join(', ');
         }
     }
-
     let eggCycleText = '-';
-
     if (apiSpecies && typeof apiSpecies.hatch_counter === 'number') {
         eggCycleText = apiSpecies.hatch_counter + ' cycles';
     }
-
     return {
         malePercent: malePercent,
         femalePercent: femalePercent,
@@ -117,35 +103,27 @@ function getBreedingInfoFromSpecies(apiSpecies) {
 function getLevelUpMovesFromApi(apiPokemon) {
     const result = [];
     const moves = apiPokemon.moves || [];
-
     for (let i = 0; i < moves.length; i++) {
         const moveEntry = moves[i];
         const details = moveEntry.version_group_details;
-
         if (!details || details.length === 0) {
             continue;
         }
-
         const first = details[0];
-
         if (first.move_learn_method.name !== 'level-up') {
             continue;
         }
-
         if (!first.level_learned_at) {
             continue;
         }
-
         result.push({
             name: moveEntry.move.name,
             level: first.level_learned_at
         });
     }
-
     result.sort(function (a, b) {
         return a.level - b.level;
     });
-
     return result;
 }
 
@@ -186,35 +164,43 @@ function toggleFavourite(id) {
     saveFavouritesToStorage();
 }
 
+function getFavouritePokemonList() {
+    const result = [];
+
+    for (let i = 0; i < pokemonList.length; i++) {
+        const pokemon = pokemonList[i];
+
+        if (isFavourite(pokemon.id)) {
+            result.push(pokemon);
+        }
+    }
+
+    return result;
+}
+
 function getIdFromSpeciesUrl(url) {
     const parts = url.split('/');
-
     for (let i = parts.length - 1; i >= 0; i--) {
         const value = parts[i];
-
         if (value !== '') {
             return Number(value);
         }
     }
-
     return null;
 }
 
 function collectEvolutionEntries(node, result) {
     const id = getIdFromSpeciesUrl(node.species.url);
     const name = node.species.name;
-
     if (id) {
         result.push({
             id: id,
             name: name
         });
     }
-
     if (!node.evolves_to) {
         return;
     }
-
     for (let i = 0; i < node.evolves_to.length; i++) {
         collectEvolutionEntries(node.evolves_to[i], result);
     }
@@ -222,11 +208,9 @@ function collectEvolutionEntries(node, result) {
 
 function parseEvolutionChain(chainRoot) {
     const result = [];
-
     if (chainRoot) {
         collectEvolutionEntries(chainRoot, result);
     }
-
     return result;
 }
 
@@ -234,13 +218,10 @@ function loadEvolutionChainForSpecies(apiSpecies) {
     if (!apiSpecies || !apiSpecies.evolution_chain) {
         return Promise.resolve([]);
     }
-
     const url = apiSpecies.evolution_chain.url;
-
     if (!url) {
         return Promise.resolve([]);
     }
-
     return fetch(url)
         .then(function (response) {
             return response.json();
@@ -259,7 +240,6 @@ function createPokemonFromApiData(apiPokemon, apiSpecies, evolutionChain) {
     const baseStatsInfo = getBaseStatsFromApi(apiPokemon);
     const breedingInfo = getBreedingInfoFromSpecies(apiSpecies);
     const moves = getLevelUpMovesFromApi(apiPokemon);
-
     return {
         id: apiPokemon.id,
         name: apiPokemon.name,
@@ -309,12 +289,10 @@ function loadSinglePokemon(id) {
                                 speciesData,
                                 evolutionChain
                             );
-
                             pokemonList.push(pokemon);
                             pokemonList.sort(function (a, b) {
                                 return a.id - b.id;
                             });
-
                             renderPokemonGrid(pokemonList);
                         });
                 });
@@ -389,7 +367,6 @@ function showNextPokemonInOverlay() {
     if (newIndex >= pokemonList.length) {
         return;
     }
-
     showPokemonInOverlayByIndex(newIndex, 'right');
 }
 
@@ -439,6 +416,19 @@ function showOverlayTab(tabName) {
     }
 }
 
+function showAllPokemon() {
+    currentFilterMode = 'all';
+    resetSearch();
+    renderPokemonGrid(pokemonList);
+}
+
+function showFavouritePokemon() {
+    currentFilterMode = 'favourites';
+    resetSearch();
+    const favourites = getFavouritePokemonList();
+    renderPokemonGrid(favourites);
+}
+
 function loadInitialPokemon() {
     pokemonList.length = 0;
     pokemonGridElement.innerHTML = '';
@@ -451,25 +441,86 @@ function handleLoadMoreClick() {
     if (isLoadingMore) {
         return;
     }
-
     isLoadingMore = true;
     loadMoreButtonElement.disabled = true;
     loadMoreLoaderElement.classList.remove('hidden');
-
     const startId = nextPokemonId;
     const endId = nextPokemonId + LOAD_MORE_COUNT - 1;
-
     for (let id = startId; id <= endId; id++) {
         loadSinglePokemon(id);
     }
-
     nextPokemonId = endId + 1;
-
     setTimeout(function () {
         isLoadingMore = false;
         loadMoreButtonElement.disabled = false;
         loadMoreLoaderElement.classList.add('hidden');
     }, 1000);
+}
+
+/* ===== Such Button ===== */
+function resetSearch() {
+    if (!searchInputElement || !searchMessageElement) {
+        return;
+    }
+
+    searchInputElement.value = '';
+    searchMessageElement.textContent = '';
+}
+
+function getBaseListForCurrentFilter() {
+    if (currentFilterMode === 'favourites') {
+        return getFavouritePokemonList();
+    }
+
+    return pokemonList;
+}
+
+function filterPokemonListByName(list, term) {
+    const result = [];
+    const lowerTerm = term.toLowerCase();
+
+    for (let i = 0; i < list.length; i++) {
+        const pokemon = list[i];
+        const name = pokemon.name.toLowerCase();
+
+        if (name.indexOf(lowerTerm) !== -1) {
+            result.push(pokemon);
+        }
+    }
+
+    return result;
+}
+
+function handleSearchInput(rawValue) {
+    if (!searchInputElement || !searchMessageElement) {
+        return;
+    }
+
+    const value = rawValue.trim();
+    const length = value.length;
+    const baseList = getBaseListForCurrentFilter();
+
+    if (length === 0) {
+        searchMessageElement.textContent = '';
+        renderPokemonGrid(baseList);
+        return;
+    }
+
+    if (length < 3) {
+        searchMessageElement.textContent = 'Please enter at least 3 characters.';
+        renderPokemonGrid(baseList);
+        return;
+    }
+
+    const filtered = filterPokemonListByName(baseList, value);
+
+    if (filtered.length === 0) {
+        searchMessageElement.textContent = 'No Pokémon found.';
+    } else {
+        searchMessageElement.textContent = '';
+    }
+
+    renderPokemonGrid(filtered);
 }
 
 /* ===== Startpunkt ===== */

@@ -71,6 +71,43 @@ body {
     font-weight: 600;
 }
 
+/* Such Funktion */
+.search-wrapper {
+    margin-top: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.search-input {
+    width: 280px;
+    max-width: 100%;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid #4b5563;
+    background: #020617;
+    color: #f9fafb;
+    font-size: 0.9rem;
+    outline: none;
+    text-align: center;
+}
+
+.search-input::placeholder {
+    color: #6b7280;
+}
+
+.search-input:focus {
+    border-color: #f97316;
+}
+
+.search-message {
+    min-height: 18px;
+    font-size: 0.75rem;
+    color: #f97373;
+}
+
 /* Pokédex Grid */
 
 .pokedex {
