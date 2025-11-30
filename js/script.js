@@ -441,15 +441,20 @@ function handleLoadMoreClick() {
     if (isLoadingMore) {
         return;
     }
+
     isLoadingMore = true;
     loadMoreButtonElement.disabled = true;
     loadMoreLoaderElement.classList.remove('hidden');
+
     const startId = nextPokemonId;
     const endId = nextPokemonId + LOAD_MORE_COUNT - 1;
+
     for (let id = startId; id <= endId; id++) {
         loadSinglePokemon(id);
     }
+
     nextPokemonId = endId + 1;
+
     setTimeout(function () {
         isLoadingMore = false;
         loadMoreButtonElement.disabled = false;
