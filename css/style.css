@@ -287,7 +287,6 @@ body {
 }
 
 /* Unterer Bereich */
-
 .overlay-bottom {
     display: flex;
     flex-direction: column;
@@ -336,7 +335,6 @@ body {
 }
 
 /* Base Stats List */
-
 .stats-list {
     margin-top: 8px;
     margin-bottom: 16px;
@@ -378,6 +376,53 @@ body {
 
 .stat-row-total {
     margin-top: 10px;
+}
+
+/* Evolution */
+.evolution-chain {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.evolution-entry {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.8rem;
+}
+
+.evolution-image-wrap {
+    width: 64px;
+    height: 64px;
+    border-radius: 999px;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+}
+
+.evolution-image {
+    max-width: 56px;
+    max-height: 56px;
+}
+
+.evolution-label {
+    text-align: center;
+}
+
+.evolution-arrow {
+    font-size: 1.2rem;
+    opacity: 0.7;
+}
+
+.evolution-empty {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-top: 8px;
 }
 
 /* Type defenses Text */

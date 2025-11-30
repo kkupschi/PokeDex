@@ -183,6 +183,47 @@ function getBaseStatsHTML(pokemon) {
     return html;
 }
 
+// Evolution
+function getEvolutionEntryHTML(evo) {
+    const evoName = capitalize(evo.name);
+    const evoId = evo.id;
+    const imgUrl =
+        'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/'
+        + evoId + '.png';
+
+    return ''
+        + '<div class="evolution-entry">'
+        + '  <div class="evolution-image-wrap">'
+        + '    <img class="evolution-image" src="' + imgUrl + '" alt="' + evoName + '"/>'
+        + '  </div>'
+        + '  <div class="evolution-label">#' + formatPokemonId(evoId)
+        + ' ' + evoName + '</div>'
+        + '</div>';
+}
+
+function getEvolutionHTML(pokemon) {
+    if (!pokemon.evolutionChain || pokemon.evolutionChain.length === 0) {
+        return '<p class="evolution-empty">No evolution data available.</p>';
+    }
+
+    let html = '<div class="evolution-chain">';
+
+    for (let i = 0; i < pokemon.evolutionChain.length; i++) {
+        const evo = pokemon.evolutionChain[i];
+        const isLast = i === pokemon.evolutionChain.length - 1;
+
+        html = html + getEvolutionEntryHTML(evo);
+
+        if (!isLast) {
+            html = html + '<div class="evolution-arrow">→</div>';
+        }
+    }
+
+    html = html + '</div>';
+
+    return html;
+}
+
 // Overlay-Inhalt (große Karte)
 function getPokemonOverlayHTML(pokemon) {
     const backgroundStyle = getCardBackgroundStyle(pokemon.types);
@@ -202,6 +243,7 @@ function getPokemonOverlayHTML(pokemon) {
         ? 'overlay-fav-button overlay-fav-button--active'
         : 'overlay-fav-button';
     const favIcon = favActive ? '❤' : '♡';
+
 
     // Gender HTML
     let genderHTML = 'Genderless';
@@ -269,12 +311,12 @@ function getPokemonOverlayHTML(pokemon) {
         '      <p class="stats-type-defenses-text">The effectiveness of each type on ' + displayName + '.</p>' +
         '    </div>' +
 
-        // EVOLUTION (Platzhalter)
+        // EVOLUTION
         '    <div class="overlay-section" data-section="evolution">' +
-        '      <p>Evolution chain will be shown here.</p>' +
+        getEvolutionHTML(pokemon) +
         '    </div>' +
 
-        // MOVES (Platzhalter)
+        // MOVES (Platzhalter – füllen wir später)
         '    <div class="overlay-section" data-section="moves">' +
         '      <p>Moves list will be shown here.</p>' +
         '    </div>' +

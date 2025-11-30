@@ -23,30 +23,37 @@ function getPokemonImageFromApi(apiPokemon) {
 
 function getTypesFromApi(apiPokemon) {
     const types = [];
+
     for (let i = 0; i < apiPokemon.types.length; i++) {
         const typeName = apiPokemon.types[i].type.name;
         types.push(typeName);
     }
+
     return types;
 }
 
 function getAbilitiesFromApi(apiPokemon) {
     const abilities = [];
+
     for (let j = 0; j < apiPokemon.abilities.length; j++) {
         const abilityName = apiPokemon.abilities[j].ability.name;
         abilities.push(capitalize(abilityName));
     }
+
     return abilities;
 }
 
 function getBaseStatsFromApi(apiPokemon) {
     const baseStats = [];
     let totalBaseStats = 0;
+
     for (let k = 0; k < apiPokemon.stats.length; k++) {
         const apiStat = apiPokemon.stats[k];
         const statName = apiStat.stat.name;
         const baseValue = apiStat.base_stat;
+
         totalBaseStats = totalBaseStats + baseValue;
+
         baseStats.push({
             name: statName,
             value: baseValue
@@ -58,33 +65,42 @@ function getBaseStatsFromApi(apiPokemon) {
         totalBaseStats: totalBaseStats
     };
 }
+
 function getBreedingInfoFromSpecies(apiSpecies) {
     let malePercent = null;
     let femalePercent = null;
+
     if (apiSpecies && typeof apiSpecies.gender_rate === 'number') {
         if (apiSpecies.gender_rate >= 0) {
             const female = (apiSpecies.gender_rate / 8) * 100;
             const male = 100 - female;
+
             malePercent = male;
             femalePercent = female;
         }
     }
 
     let eggGroupsText = '-';
+
     if (apiSpecies && Array.isArray(apiSpecies.egg_groups)) {
         const eggGroups = [];
-        for (let g = 0; g < apiSpecies.egg_groups.length; g++) {
-            const groupName = apiSpecies.egg_groups[g].name;
+
+        for (let i = 0; i < apiSpecies.egg_groups.length; i++) {
+            const groupName = apiSpecies.egg_groups[i].name;
             eggGroups.push(capitalize(groupName));
         }
+
         if (eggGroups.length > 0) {
             eggGroupsText = eggGroups.join(', ');
         }
     }
+
     let eggCycleText = '-';
+
     if (apiSpecies && typeof apiSpecies.hatch_counter === 'number') {
         eggCycleText = apiSpecies.hatch_counter + ' cycles';
     }
+
     return {
         malePercent: malePercent,
         femalePercent: femalePercent,
@@ -130,22 +146,94 @@ function toggleFavourite(id) {
     saveFavouritesToStorage();
 }
 
-function createPokemonFromApiData(apiPokemon, apiSpecies) {
+function getIdFromSpeciesUrl(url) {
+    const parts = url.split('/');
+
+    for (let i = parts.length - 1; i >= 0; i--) {
+        const value = parts[i];
+
+        if (value !== '') {
+            return Number(value);
+        }
+    }
+
+    return null;
+}
+
+function collectEvolutionEntries(node, result) {
+    const id = getIdFromSpeciesUrl(node.species.url);
+    const name = node.species.name;
+
+    if (id) {
+        result.push({
+            id: id,
+            name: name
+        });
+    }
+
+    if (!node.evolves_to) {
+        return;
+    }
+
+    for (let i = 0; i < node.evolves_to.length; i++) {
+        collectEvolutionEntries(node.evolves_to[i], result);
+    }
+}
+
+function parseEvolutionChain(chainRoot) {
+    const result = [];
+
+    if (chainRoot) {
+        collectEvolutionEntries(chainRoot, result);
+    }
+
+    return result;
+}
+
+function loadEvolutionChainForSpecies(apiSpecies) {
+    if (!apiSpecies || !apiSpecies.evolution_chain) {
+        return Promise.resolve([]);
+    }
+
+    const url = apiSpecies.evolution_chain.url;
+
+    if (!url) {
+        return Promise.resolve([]);
+    }
+
+    return fetch(url)
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+            return parseEvolutionChain(data.chain);
+        })
+        .catch(function () {
+            return [];
+        });
+}
+
+function createPokemonFromApiData(apiPokemon, apiSpecies, evolutionChain) {
     const types = getTypesFromApi(apiPokemon);
     const abilities = getAbilitiesFromApi(apiPokemon);
     const baseStatsInfo = getBaseStatsFromApi(apiPokemon);
     const breedingInfo = getBreedingInfoFromSpecies(apiSpecies);
+
     return {
-        id: apiPokemon.id, name: apiPokemon.name, types: types,
+        id: apiPokemon.id,
+        name: apiPokemon.name,
+        types: types,
         image: getPokemonImageFromApi(apiPokemon),
-        height: apiPokemon.height, weight: apiPokemon.weight,
+        height: apiPokemon.height,
+        weight: apiPokemon.weight,
         abilities: abilities,
         baseStats: baseStatsInfo.baseStats,
         totalBaseStats: baseStatsInfo.totalBaseStats,
         malePercent: breedingInfo.malePercent,
         femalePercent: breedingInfo.femalePercent,
         eggGroupsText: breedingInfo.eggGroupsText,
-        eggCycleText: breedingInfo.eggCycleText
+        eggCycleText: breedingInfo.eggCycleText,
+        evolutionChain: evolutionChain
     };
 }
 
@@ -161,6 +249,7 @@ function renderPokemonGrid(pokemonArray) {
 function loadSinglePokemon(id) {
     const pokemonUrl = 'https://pokeapi.co/api/v2/pokemon/' + id;
     const speciesUrl = 'https://pokeapi.co/api/v2/pokemon-species/' + id;
+
     fetch(pokemonUrl)
         .then(function (response) {
             return response.json();
@@ -171,12 +260,21 @@ function loadSinglePokemon(id) {
                     return response.json();
                 })
                 .then(function (speciesData) {
-                    const pokemon = createPokemonFromApiData(pokemonData, speciesData);
-                    pokemonList.push(pokemon);
-                    pokemonList.sort(function (a, b) {
-                        return a.id - b.id;
-                    });
-                    renderPokemonGrid(pokemonList);
+                    return loadEvolutionChainForSpecies(speciesData)
+                        .then(function (evolutionChain) {
+                            const pokemon = createPokemonFromApiData(
+                                pokemonData,
+                                speciesData,
+                                evolutionChain
+                            );
+
+                            pokemonList.push(pokemon);
+                            pokemonList.sort(function (a, b) {
+                                return a.id - b.id;
+                            });
+
+                            renderPokemonGrid(pokemonList);
+                        });
                 });
         })
         .catch(function (error) {
