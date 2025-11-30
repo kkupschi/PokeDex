@@ -10,7 +10,6 @@ body {
 }
 
 /* Header */
-
 .header {
     background: #050816;
     border-bottom: 1px solid #1f2937;
@@ -30,7 +29,6 @@ body {
 }
 
 /* Layout */
-
 .main {
     max-width: 1200px;
     margin: 0 auto;
@@ -38,7 +36,6 @@ body {
 }
 
 /* Startscreen */
-
 .start-screen {
     text-align: center;
     margin-bottom: 24px;
@@ -221,6 +218,11 @@ body {
     cursor: pointer;
     font-size: 1rem;
     padding: 0;
+}
+
+.overlay-fav-button--active {
+    background: #f97373;
+    color: #ffffff;
 }
 
 .overlay-fav-button:hover {
@@ -463,7 +465,6 @@ body {
 }
 
 /* Flip-Animationen für Overlay-Karte */
-
 @keyframes flip-left {
     from {
         transform: rotateY(0deg);

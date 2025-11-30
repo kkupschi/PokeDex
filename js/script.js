@@ -5,58 +5,48 @@ let lastScrollY = 0;
 const pokemonGridElement = document.getElementById('pokemon-grid');
 const overlayElement = document.getElementById('overlay');
 const overlayContentElement = document.getElementById('overlay-content');
+let favouriteIds = [];
 
 function getPokemonImageFromApi(apiPokemon) {
     const sprites = apiPokemon.sprites;
-
     const artwork = sprites.other['official-artwork'].front_default;
     const dreamWorld = sprites.other.dream_world.front_default;
     const defaultSprite = sprites.front_default;
-
     if (artwork) {
         return artwork;
     }
-
     if (dreamWorld) {
         return dreamWorld;
     }
-
     return defaultSprite;
 }
 
 function getTypesFromApi(apiPokemon) {
     const types = [];
-
     for (let i = 0; i < apiPokemon.types.length; i++) {
         const typeName = apiPokemon.types[i].type.name;
         types.push(typeName);
     }
-
     return types;
 }
 
 function getAbilitiesFromApi(apiPokemon) {
     const abilities = [];
-
     for (let j = 0; j < apiPokemon.abilities.length; j++) {
         const abilityName = apiPokemon.abilities[j].ability.name;
         abilities.push(capitalize(abilityName));
     }
-
     return abilities;
 }
 
 function getBaseStatsFromApi(apiPokemon) {
     const baseStats = [];
     let totalBaseStats = 0;
-
     for (let k = 0; k < apiPokemon.stats.length; k++) {
         const apiStat = apiPokemon.stats[k];
         const statName = apiStat.stat.name;
         const baseValue = apiStat.base_stat;
-
         totalBaseStats = totalBaseStats + baseValue;
-
         baseStats.push({
             name: statName,
             value: baseValue
@@ -68,42 +58,33 @@ function getBaseStatsFromApi(apiPokemon) {
         totalBaseStats: totalBaseStats
     };
 }
-
 function getBreedingInfoFromSpecies(apiSpecies) {
     let malePercent = null;
     let femalePercent = null;
-
     if (apiSpecies && typeof apiSpecies.gender_rate === 'number') {
         if (apiSpecies.gender_rate >= 0) {
             const female = (apiSpecies.gender_rate / 8) * 100;
             const male = 100 - female;
-
             malePercent = male;
             femalePercent = female;
         }
     }
 
     let eggGroupsText = '-';
-
     if (apiSpecies && Array.isArray(apiSpecies.egg_groups)) {
         const eggGroups = [];
-
         for (let g = 0; g < apiSpecies.egg_groups.length; g++) {
             const groupName = apiSpecies.egg_groups[g].name;
             eggGroups.push(capitalize(groupName));
         }
-
         if (eggGroups.length > 0) {
             eggGroupsText = eggGroups.join(', ');
         }
     }
-
     let eggCycleText = '-';
-
     if (apiSpecies && typeof apiSpecies.hatch_counter === 'number') {
         eggCycleText = apiSpecies.hatch_counter + ' cycles';
     }
-
     return {
         malePercent: malePercent,
         femalePercent: femalePercent,
@@ -112,12 +93,48 @@ function getBreedingInfoFromSpecies(apiSpecies) {
     };
 }
 
+function loadFavouritesFromStorage() {
+    const raw = localStorage.getItem('pokedex_favourites');
+    if (!raw) {
+        favouriteIds = [];
+        return;
+    }
+    try {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+            favouriteIds = parsed;
+        } else {
+            favouriteIds = [];
+        }
+    } catch (error) {
+        favouriteIds = [];
+    }
+}
+
+function saveFavouritesToStorage() {
+    const json = JSON.stringify(favouriteIds);
+    localStorage.setItem('pokedex_favourites', json);
+}
+
+function isFavourite(id) {
+    return favouriteIds.indexOf(id) !== -1;
+}
+
+function toggleFavourite(id) {
+    const index = favouriteIds.indexOf(id);
+    if (index === -1) {
+        favouriteIds.push(id);
+    } else {
+        favouriteIds.splice(index, 1);
+    }
+    saveFavouritesToStorage();
+}
+
 function createPokemonFromApiData(apiPokemon, apiSpecies) {
     const types = getTypesFromApi(apiPokemon);
     const abilities = getAbilitiesFromApi(apiPokemon);
     const baseStatsInfo = getBaseStatsFromApi(apiPokemon);
     const breedingInfo = getBreedingInfoFromSpecies(apiSpecies);
-
     return {
         id: apiPokemon.id, name: apiPokemon.name, types: types,
         image: getPokemonImageFromApi(apiPokemon),
@@ -134,19 +151,16 @@ function createPokemonFromApiData(apiPokemon, apiSpecies) {
 
 function renderPokemonGrid(pokemonArray) {
     let html = '';
-
     for (let i = 0; i < pokemonArray.length; i++) {
         const pokemon = pokemonArray[i];
         html = html + getPokemonCardHTML(pokemon);
     }
-
     pokemonGridElement.innerHTML = html;
 }
 
 function loadSinglePokemon(id) {
     const pokemonUrl = 'https://pokeapi.co/api/v2/pokemon/' + id;
     const speciesUrl = 'https://pokeapi.co/api/v2/pokemon-species/' + id;
-
     fetch(pokemonUrl)
         .then(function (response) {
             return response.json();
@@ -184,19 +198,14 @@ function showPokemonInOverlayByIndex(index, direction) {
     if (index < 0 || index >= pokemonList.length) {
         return;
     }
-
     const pokemon = pokemonList[index];
     const html = getPokemonOverlayHTML(pokemon);
-
     overlayContentElement.innerHTML = html;
     currentOverlayIndex = index;
-
     const cardElement = overlayContentElement.querySelector('.overlay-card');
-
     if (!cardElement) {
         return;
     }
-
     if (direction === 'left') {
         cardElement.classList.add('overlay-card--flip-left');
     } else if (direction === 'right') {
@@ -237,12 +246,26 @@ function showPreviousPokemonInOverlay() {
 
 function showNextPokemonInOverlay() {
     const newIndex = currentOverlayIndex + 1;
-
     if (newIndex >= pokemonList.length) {
         return;
     }
 
     showPokemonInOverlayByIndex(newIndex, 'right');
+}
+
+function handleFavouriteClick(id) {
+    toggleFavourite(id);
+    const button = document.querySelector('.overlay-fav-button');
+    if (!button) {
+        return;
+    }
+    if (isFavourite(id)) {
+        button.classList.add('overlay-fav-button--active');
+        button.textContent = '❤';
+    } else {
+        button.classList.remove('overlay-fav-button--active');
+        button.textContent = '♡';
+    }
 }
 
 function handleOverlayClick(event) {
@@ -253,11 +276,9 @@ function handleOverlayClick(event) {
 
 function showOverlayTab(tabName) {
     const tabs = overlayContentElement.querySelectorAll('.overlay-tab');
-
     for (let i = 0; i < tabs.length; i++) {
         const tab = tabs[i];
         const tabKey = tab.getAttribute('data-tab');
-
         if (tabKey === tabName) {
             tab.classList.add('overlay-tab--active');
         } else {
@@ -267,11 +288,9 @@ function showOverlayTab(tabName) {
 
     // Inhalte (Sections) umschalten
     const sections = overlayContentElement.querySelectorAll('.overlay-section');
-
     for (let j = 0; j < sections.length; j++) {
         const section = sections[j];
         const sectionKey = section.getAttribute('data-section');
-
         if (sectionKey === tabName) {
             section.classList.add('overlay-section--active');
         } else {
@@ -280,7 +299,15 @@ function showOverlayTab(tabName) {
     }
 }
 
+function loadInitialPokemon() {
+    pokemonList.length = 0;
+    pokemonGridElement.innerHTML = '';
+    for (let id = 1; id <= INITIAL_POKEMON_COUNT; id++) {
+        loadSinglePokemon(id);
+    }
+}
+
 /* ===== Startpunkt ===== */
 
-
+loadFavouritesFromStorage();
 loadInitialPokemon();

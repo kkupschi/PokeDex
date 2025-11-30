@@ -5,7 +5,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pokédex</title>
-
     <link rel="stylesheet" href="css/fonts.css" />
     <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -16,7 +15,6 @@
             <div class="logo">Pokédex</div>
         </div>
     </header>
-
     <main class="main">
         <section id="start-screen" class="start-screen">
             <h1 class="gameboy-title">Select your generation</h1>
@@ -30,17 +28,20 @@
                 <button class="gen-button">Gen 7</button>
                 <button class="gen-button">Gen 8</button>
                 <button class="gen-button">Gen 9</button>
-                <button class="gen-button gen-all">All Pokémon</button>
-                <button class="gen-button gen-favourites">Favourites</button>
+
+                <button class="gen-button gen-all" onclick="showAllPokemon()">
+                    All Pokémon
+                </button>
+                <button class="gen-button gen-favourites" onclick="showFavouritePokemon()">
+                    Favourites
+                </button>
             </div>
         </section>
-
         <!-- Pokédex-Bereich -->
         <section id="pokedex" class="pokedex">
             <div id="pokemon-grid" class="pokemon-grid">
             </div>
         </section>
-
         <!-- Overlay (große Ansicht) -->
         <div id="overlay" class="overlay hidden" onclick="handleOverlayClick(event)">
             <div id="overlay-content" class="overlay-content">

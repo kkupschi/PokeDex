@@ -30,13 +30,13 @@ function getStatColor(base) {
     } else {
         return '#dc3545';
     }
-}
+};
 
 // ID als 4-stellige Zahl formatieren (1 -> 0001)
 function formatPokemonId(id) {
     const idString = String(id);
     return idString.padStart(4, '0');
-}
+};
 
 // Erstes Zeichen groß machen
 function capitalize(text) {
@@ -45,4 +45,4 @@ function capitalize(text) {
     }
 
     return text.charAt(0).toUpperCase() + text.slice(1);
-}
+};

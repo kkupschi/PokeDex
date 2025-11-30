@@ -196,6 +196,13 @@ function getPokemonOverlayHTML(pokemon) {
 
     const baseStatsHTML = getBaseStatsHTML(pokemon);
 
+    // Favoriten Status
+    const favActive = isFavourite(pokemon.id);
+    const favButtonClass = favActive
+        ? 'overlay-fav-button overlay-fav-button--active'
+        : 'overlay-fav-button';
+    const favIcon = favActive ? '❤' : '♡';
+
     // Gender HTML
     let genderHTML = 'Genderless';
     if (pokemon.malePercent != null && pokemon.femalePercent != null) {
@@ -219,7 +226,8 @@ function getPokemonOverlayHTML(pokemon) {
         '      <h2 class="overlay-name">' + displayName + '</h2>' +
         '      <div class="overlay-top-right">' +
         '        <span class="overlay-id">#' + formattedId + '</span>' +
-        '        <button class="overlay-fav-button" type="button">❤</button>' +
+        '        <button class="' + favButtonClass + '" type="button" onclick="handleFavouriteClick(' + pokemon.id + ')">' + favIcon +
+        '        </button>' +
         '      </div>' +
         '    </div>' +
         '    <div class="overlay-types">' + typesHTML + '</div>' +
