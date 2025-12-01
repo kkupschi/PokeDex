@@ -11,19 +11,23 @@
 </head>
 
 <body>
+    <!-- Header -->
     <header class="header">
         <div class="header-inner">
             <div class="logo">Pokédex</div>
         </div>
     </header>
+
     <main class="main">
         <section id="start-screen" class="start-screen">
             <h1 class="gameboy-title">Select your generation</h1>
+            <!-- Search -->
             <div class="search-wrapper">
                 <input id="search-input" class="search-input" type="search" placeholder="Search Pokémon..."
                     aria-label="Search Pokémon by name" oninput="handleSearchInput(this.value)" />
                 <p id="search-message" class="search-message"></p>
             </div>
+            <!-- Generation Buttons -->
             <div class="generation-buttons">
                 <button class="gen-button" onclick="showGeneration(1)">Gen 1</button>
                 <button class="gen-button" onclick="showGeneration(2)">Gen 2</button>
@@ -38,29 +42,27 @@
                 <button class="gen-button gen-favourites" onclick="showFavouritePokemon()">Favourites</button>
             </div>
         </section>
-        <!-- Pokédex-Bereich -->
+
+        <!-- Pokédex -->
         <section id="pokedex" class="pokedex">
             <div id="pokemon-grid" class="pokemon-grid"></div>
             <div class="load-more-wrapper">
                 <button id="load-more-button" class="load-more-button" onclick="handleLoadMoreClick()">
                     Load more Pokémon
                 </button>
+
                 <div id="load-more-loader" class="load-more-loader hidden">
                     <div class="loader-ball"></div>
                 </div>
             </div>
         </section>
-        <!-- Overlay (große Ansicht) -->
+
+        <!-- Overlay -->
         <div id="overlay" class="overlay hidden" onclick="handleOverlayClick(event)">
             <div id="overlay-content" class="overlay-content">
-                <article id="overlay-card" class="overlay-card">
-                    <div class="overlay-top"></div>
-                    <div class="overlay-bottom"></div>
-                </article>
             </div>
         </div>
     </main>
-
     <script src="js/db.js"></script>
     <script src="js/template.js"></script>
     <script src="js/script.js"></script>
