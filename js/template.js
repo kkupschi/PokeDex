@@ -19,12 +19,14 @@ const getCardImageHTML = p =>
 
 // Small Pokémon Card
 function getPokemonCardHTML(p) {
+    const displayName = capitalize(p.name);
+    const formattedId = formatPokemonId(p.id);
     return `
         <article class="pokemon-card" style="${getCardBackgroundStyle(p.types)}"
                  onclick="openPokemonOverlay(${p.id})">
             <header class="pokemon-card-header">
-                <h2 class="pokemon-name">${capitalize(p.name)}</h2>
-                <span class="pokemon-id">#${formatPokemonId(p.id)}</span>
+                <h2 class="pokemon-name">${displayName}</h2>
+                <span class="pokemon-id pokemon-id--below">#${formattedId}</span>
             </header>
             <div class="pokemon-types">${getTypeBadgesHTML(p.types)}</div>
             ${getCardImageHTML(p)}
@@ -47,7 +49,6 @@ function getStatDisplayName(n) {
 function getBaseStatsHTML(p) {
     if (!p.baseStats?.length) return "";
     const order = ["hp", "attack", "defense", "special-attack", "special-defense", "speed"];
-
     const rows = order
         .map(stat => {
             const s = p.baseStats.find(x => x.name === stat);
@@ -63,10 +64,8 @@ function getBaseStatsHTML(p) {
             </div>`;
         })
         .join("");
-
     const totalPercent = Math.min(100, Math.round((p.totalBaseStats / 780) * 100));
     const totalColor = getStatColor(p.totalBaseStats / 6);
-
     return `
         ${rows}
         <div class="stat-row stat-row-total">

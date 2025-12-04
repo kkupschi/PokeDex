@@ -13,59 +13,48 @@
 <body>
     <!-- Header -->
     <header class="header">
-        <div class="header-inner">
-            <div class="logo">Pokédex</div>
-        </div>
+        <span class="header-title">Pokédex</span>
     </header>
-
     <main class="main">
-        <section id="start-screen" class="start-screen">
-            <h1 class="gameboy-title">Select your generation</h1>
-            <!-- Search -->
-            <div class="search-wrapper">
-                <input id="search-input" class="search-input" type="search" placeholder="Search Pokémon..."
-                    aria-label="Search Pokémon by name" oninput="handleSearchInput(this.value)" />
-                <p id="search-message" class="search-message"></p>
-            </div>
-            <!-- Generation Buttons -->
-            <div class="generation-buttons">
-                <button class="gen-button" onclick="showGeneration(1)">Gen 1</button>
-                <button class="gen-button" onclick="showGeneration(2)">Gen 2</button>
-                <button class="gen-button" onclick="showGeneration(3)">Gen 3</button>
-                <button class="gen-button" onclick="showGeneration(4)">Gen 4</button>
-                <button class="gen-button" onclick="showGeneration(5)">Gen 5</button>
-                <button class="gen-button" onclick="showGeneration(6)">Gen 6</button>
-                <button class="gen-button" onclick="showGeneration(7)">Gen 7</button>
-                <button class="gen-button" onclick="showGeneration(8)">Gen 8</button>
-                <button class="gen-button" onclick="showGeneration(9)">Gen 9</button>
-                <button class="gen-button gen-all" onclick="showAllPokemon()">All Pokémon</button>
-                <button class="gen-button gen-favourites" onclick="showFavouritePokemon()">Favourites</button>
-            </div>
-        </section>
-
-        <!-- Pokédex -->
-        <section id="pokedex" class="pokedex">
-            <div id="pokemon-grid" class="pokemon-grid"></div>
-            <div class="load-more-wrapper">
-                <button id="load-more-button" class="load-more-button" onclick="handleLoadMoreClick()">
-                    Load more Pokémon
-                </button>
-
-                <div id="load-more-loader" class="load-more-loader hidden">
-                    <div class="loader-ball"></div>
+        <div class="main-inner">
+            <!-- Intro / Logo -->
+            <section class="page-intro">
+                <img src="img/PokeDex.webp" alt="Pokédex Logo" class="page-intro-logo">
+                <h2 class="page-intro-title">Search your Pokémon</h2>
+                <!-- Search -->
+                <div class="search-wrapper">
+                    <input id="search-input" class="search-input" type="search" placeholder="Search Pokémon..."
+                        aria-label="Search Pokémon by name" oninput="handleSearchInput(this.value)" />
+                    <p id="search-message" class="search-message"></p>
                 </div>
-            </div>
-        </section>
-
-        <!-- Overlay -->
-        <div id="overlay" class="overlay hidden" onclick="handleOverlayClick(event)">
-            <div id="overlay-content" class="overlay-content">
-            </div>
+                <!-- Buttons: All / Favourites -->
+                <div class="generation-buttons">
+                    <button class="gen-button gen-all" onclick="showAllPokemon()">All Pokémon</button>
+                    <button class="gen-button gen-favourites" onclick="showFavouritePokemon()">Favourites</button>
+                </div>
+            </section>
+            <!-- Pokédex Grid + Load More -->
+            <section id="pokedex" class="pokedex">
+                <div id="pokemon-grid" class="pokemon-grid"></div>
+                <div class="load-more-wrapper">
+                    <button id="load-more-button" class="load-more-button" onclick="handleLoadMoreClick()">
+                        Load more Pokémon
+                    </button>
+                    <!-- Loader -->
+                    <div id="load-more-loader" class="load-more-loader hidden">
+                        <img src="img/LoadingBall.png" alt="Loading" class="loader-image">
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
+    <!-- Overlay -->
+    <div id="overlay" class="overlay hidden" onclick="handleOverlayClick(event)">
+        <div id="overlay-content" class="overlay-content"></div>
+    </div>
     <script src="js/db.js"></script>
     <script src="js/template.js"></script>
     <script src="js/script.js"></script>
-</body>
 
+</body>
 </html>
