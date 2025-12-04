@@ -209,7 +209,6 @@ function createPokemonFromApiData(apiPokemon, apiSpecies, evolutionChain) {
     const stats = getBaseStatsFromApi(apiPokemon);
     const breeding = getBreedingInfoFromSpecies(apiSpecies);
     const moves = getLevelUpMovesFromApi(apiPokemon);
-
     return {
         id: apiPokemon.id,
         name: apiPokemon.name,
@@ -235,36 +234,49 @@ function addPokemonToList(pokemon) {
     pokemonList.sort((a, b) => a.id - b.id);
 }
 
-// Laden von Pokémon
-function loadSinglePokemon(id, onChange) {
-    if (pokemonCache[id] && speciesCache[id]) {
-        const evo = pokemonCache[id].evolutionChain || [];
-        const p = createPokemonFromApiData(pokemonCache[id], speciesCache[id], evo);
-        addPokemonToList(p);
-        if (onChange) onChange(pokemonList);
-        return;
-    }
+// === Laden von Pokémon ===
+function createAndStorePokemon(apiPokemon, apiSpecies, evo, onChange) {
+    const p = createPokemonFromApiData(apiPokemon, apiSpecies, evo);
+    addPokemonToList(p);
+    if (onChange) onChange(pokemonList);
+}
 
+function loadSinglePokemonFromCache(id, onChange) {
+    const cachedPokemon = pokemonCache[id];
+    const cachedSpecies = speciesCache[id];
+    if (!cachedPokemon || !cachedSpecies) return false;
+    const evo = cachedPokemon.evolutionChain || [];
+    createAndStorePokemon(cachedPokemon, cachedSpecies, evo, onChange);
+    return true;
+}
+
+function handleLoadedSpecies(id, apiPokemon, apiSpecies, onChange) {
+    speciesCache[id] = apiSpecies;
+    return loadEvolutionChainForSpecies(apiSpecies).then(evo => {
+        apiPokemon.evolutionChain = evo;
+        createAndStorePokemon(apiPokemon, apiSpecies, evo, onChange);
+    });
+}
+
+function fetchPokemonAndSpecies(id, onChange) {
     const pURL = `https://pokeapi.co/api/v2/pokemon/${id}`;
     const sURL = `https://pokeapi.co/api/v2/pokemon-species/${id}`;
-
-    fetchJson(pURL)
+    return fetchJson(pURL)
         .then(apiPokemon => {
             pokemonCache[id] = apiPokemon;
-            return fetchJson(sURL).then(apiSpecies => {
-                speciesCache[id] = apiSpecies;
-                return loadEvolutionChainForSpecies(apiSpecies).then(evo => {
-                    apiPokemon.evolutionChain = evo;
-                    const p = createPokemonFromApiData(apiPokemon, apiSpecies, evo);
-                    addPokemonToList(p);
-                    if (onChange) onChange(pokemonList);
-                });
-            });
+            return fetchJson(sURL).then(apiSpecies =>
+                handleLoadedSpecies(id, apiPokemon, apiSpecies, onChange)
+            );
         })
         .catch(logPokemonError);
 }
 
-/* Lädt einen Bereich an IDs (inklusive). */
+function loadSinglePokemon(id, onChange) {
+    if (loadSinglePokemonFromCache(id, onChange)) return;
+    fetchPokemonAndSpecies(id, onChange);
+}
+
+/* Lädt einen Bereich an IDs */
 function loadPokemonRange(startId, endId, onChange) {
     for (let id = startId; id <= endId; id++) {
         loadSinglePokemon(id, onChange);
