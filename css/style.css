@@ -68,6 +68,26 @@ body {
     padding: 24px 16px;
 }
 
+/* Effektivität */
+.effectiveness-panel {
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 16px auto 0;
+    padding: 12px;
+    background: #0f172a;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
+}
+
+.effectiveness-panel img {
+    width: 700px;
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
 /* Startscreen */
 .start-screen {
     text-align: center;
@@ -456,6 +476,13 @@ body {
 
 .stat-bar-fill {
     height: 100%;
+}
+
+.stats-type-defenses-heading {
+    margin-top: 16px;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
 }
 
 /* Evolution */

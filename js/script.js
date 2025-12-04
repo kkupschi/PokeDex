@@ -158,14 +158,20 @@ function showOverlayTab(tab) {
 // Filter & Favourites
 function showAllPokemon() {
     currentFilterMode = "all";
+    hideEffectiveness();
     resetSearch();
     renderPokemonGrid(pokemonList);
 }
 
 function showFavouritePokemon() {
     currentFilterMode = "favourites";
+    hideEffectiveness();
     resetSearch();
-    renderPokemonGrid(getBaseListForCurrentFilter());
+    renderPokemonGrid(getFavouritePokemonList());
+}
+
+function hideEffectivenessPanel() {
+    document.getElementById("effectiveness-panel").classList.add("hidden");
 }
 
 // Load More
@@ -245,6 +251,29 @@ function handleSearchInput(rawValue) {
     }
     const filtered = filterPokemonListByName(baseList, value);
     updateSearchResults(filtered);
+}
+
+function toggleEffectiveness() {
+    const panel = document.getElementById("effectiveness-panel");
+    const isHidden = panel.classList.contains("hidden");
+    panel.classList.add("hidden"); // zuerst IMMER schließen
+    if (isHidden) {
+        panel.classList.remove("hidden");
+    }
+}
+
+function showEffectiveness() {
+    currentFilterMode = "effectiveness";
+    document.getElementById("effectiveness-panel").classList.remove("hidden");
+    pokemonGridElement.classList.add("hidden");
+    document.querySelector(".load-more-wrapper").classList.add("hidden");
+    resetSearch();
+}
+
+function hideEffectiveness() {
+    document.getElementById("effectiveness-panel").classList.add("hidden");
+    pokemonGridElement.classList.remove("hidden");
+    document.querySelector(".load-more-wrapper").classList.remove("hidden");
 }
 
 // init
