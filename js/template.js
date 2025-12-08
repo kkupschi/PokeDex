@@ -1,4 +1,3 @@
-// Background
 function getCardBackgroundStyle(types) {
     const c1 = TYPE_COLORS[types[0]];
     if (types.length === 1) return `background:${c1};`;
@@ -6,18 +5,15 @@ function getCardBackgroundStyle(types) {
     return `background:linear-gradient(135deg,${c1} 0%,${c1} 50%,${c2} 50%,${c2} 100%);`;
 }
 
-// Types
 function getTypeBadgesHTML(types) {
     return types
         .map(t => `<span class="type-badge" style="background:${TYPE_COLORS[t]};">${capitalize(t)}</span>`)
         .join("");
 }
 
-// Small Card Image
 const getCardImageHTML = p =>
     `<div class="pokemon-image-wrap"><img class="pokemon-image" src="${p.image}" alt="${p.name}" /></div>`;
 
-// Small Pokémon Card
 function getPokemonCardHTML(p) {
     const displayName = capitalize(p.name);
     const formattedId = formatPokemonId(p.id);
@@ -33,7 +29,6 @@ function getPokemonCardHTML(p) {
         </article>`;
 }
 
-// Stats
 function getStatDisplayName(n) {
     const map = {
         "hp": "HP",
@@ -77,7 +72,6 @@ function getBaseStatsHTML(p) {
         </div>`;
 }
 
-// Evolution
 function getEvolutionEntryHTML(e) {
     const img = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${e.id}.png`;
     return `
@@ -104,7 +98,6 @@ function getEvolutionHTML(p) {
         </div>`;
 }
 
-// Moves
 function formatMoveName(n) {
     return n.split("-").map(s => s[0].toUpperCase() + s.slice(1)).join(" ");
 }
@@ -124,7 +117,6 @@ function getMovesHTML(p) {
         </div>`;
 }
 
-// Overlay (Große Ansicht)
 function getPokemonOverlayHTML(p) {
     const backgroundStyle = getCardBackgroundStyle(p.types);
     const typesHTML = getTypeBadgesHTML(p.types);

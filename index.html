@@ -11,21 +11,17 @@
 </head>
 
 <body>
-    <!-- Header -->
     <header class="header"></header>
     <main class="main">
         <div class="main-inner">
-            <!-- Header Logo -->
             <section class="page-intro">
                 <img src="img/PokeDex.webp" alt="Pokédex Logo" class="page-intro-logo">
                 <h2 class="page-intro-title">Search your Pokémon</h2>
-                <!-- Search -->
                 <div class="search-wrapper">
                     <input id="search-input" class="search-input" type="search" placeholder="Search Pokémon..."
                         aria-label="Search Pokémon by name" oninput="handleSearchInput(this.value)" />
                     <p id="search-message" class="search-message"></p>
                 </div>
-                <!-- Buttons: All / Favourites -->
                 <div class="generation-buttons">
                     <button class="gen-button gen-all" onclick="showAllPokemon()">All Pokémon</button>
                     <button class="gen-button gen-favourites" onclick="showFavouritePokemon()">Favourites</button>
@@ -35,14 +31,12 @@
                     <img src="img/effectiveness-table.svg" alt="Type Effectiveness Chart">
                 </div>
             </section>
-            <!-- Pokédex Grid + Load More -->
             <section id="pokedex" class="pokedex">
                 <div id="pokemon-grid" class="pokemon-grid"></div>
                 <div class="load-more-wrapper">
                     <button id="load-more-button" class="load-more-button" onclick="handleLoadMoreClick()">
                         Load more Pokémon
                     </button>
-                    <!-- Loader -->
                     <div id="load-more-loader" class="load-more-loader hidden">
                         <img src="img/LoadingBall.png" alt="Loading" class="loader-image">
                     </div>
@@ -50,7 +44,6 @@
             </section>
         </div>
     </main>
-    <!-- Overlay -->
     <div id="overlay" class="overlay hidden" onclick="handleOverlayClick(event)">
         <div id="overlay-content" class="overlay-content"></div>
     </div>

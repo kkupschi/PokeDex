@@ -13,7 +13,6 @@ const loadMoreLoaderElement = document.getElementById("load-more-loader");
 const searchInputElement = document.getElementById("search-input");
 const searchMessageElement = document.getElementById("search-message");
 
-// Scroll-Lock fürs Overlay
 function getScrollbarWidth() {
     return window.innerWidth - document.documentElement.clientWidth;
 }
@@ -47,7 +46,6 @@ function unlockBodyScroll() {
     window.scrollTo(0, lastScrollY);
 }
 
-// Rendering
 function renderPokemonGrid(list) {
     pokemonGridElement.innerHTML = list.map(getPokemonCardHTML).join("");
 }
@@ -66,7 +64,6 @@ function handlePokemonDataChanged() {
     renderPokemonGrid(getBaseListForCurrentFilter());
 }
 
-// Overlay-Logik
 function findPokemonIndexById(id) {
     return pokemonList.findIndex(p => p.id === id);
 }
@@ -155,7 +152,6 @@ function showOverlayTab(tab) {
     );
 }
 
-// Filter & Favourites
 function showAllPokemon() {
     currentFilterMode = "all";
     hideEffectiveness();
@@ -174,7 +170,6 @@ function hideEffectivenessPanel() {
     document.getElementById("effectiveness-panel").classList.add("hidden");
 }
 
-// Load More
 function startLoadMore() {
     isLoadingMore = true;
     loadMoreButtonElement.disabled = true;
@@ -204,7 +199,6 @@ function handleLoadMoreClick() {
     finishLoadMoreAfterDelay();
 }
 
-// Suche
 function resetSearch() {
     if (!searchInputElement || !searchMessageElement) return;
     searchInputElement.value = "";
@@ -256,7 +250,7 @@ function handleSearchInput(rawValue) {
 function toggleEffectiveness() {
     const panel = document.getElementById("effectiveness-panel");
     const isHidden = panel.classList.contains("hidden");
-    panel.classList.add("hidden"); // zuerst IMMER schließen
+    panel.classList.add("hidden");
     if (isHidden) {
         panel.classList.remove("hidden");
     }
@@ -276,7 +270,6 @@ function hideEffectiveness() {
     document.querySelector(".load-more-wrapper").classList.remove("hidden");
 }
 
-// init
 function loadInitialPokemon() {
     pokemonList.length = 0;
     pokemonGridElement.innerHTML = "";

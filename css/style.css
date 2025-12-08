@@ -16,7 +16,6 @@ body {
     padding: 0 16px 32px;
 }
 
-/* Header */
 .header {
     display: flex;
     align-items: center;
@@ -61,14 +60,12 @@ body {
     color: #ffffff;
 }
 
-/* Layout */
 .main {
     max-width: 1440px;
     margin: 0 auto;
     padding: 24px 16px;
 }
 
-/* Effektivität */
 .effectiveness-panel {
     max-width: 100%;
     overflow-x: auto;
@@ -88,7 +85,6 @@ body {
     display: block;
 }
 
-/* Startscreen */
 .start-screen {
     text-align: center;
     margin-bottom: 24px;
@@ -99,7 +95,6 @@ body {
     margin-bottom: 16px;
 }
 
-/* Generation Buttons */
 .generation-buttons {
     display: flex;
     justify-content: center;
@@ -126,7 +121,6 @@ body {
     font-weight: 600;
 }
 
-/* Search */
 .search-wrapper {
     margin: 16px 0 12px;
     display: flex;
@@ -162,7 +156,6 @@ body {
     color: #f97373;
 }
 
-/* Pokedex Grid */
 .pokedex {
     margin-top: 12px;
 }
@@ -174,7 +167,6 @@ body {
     justify-content: center;
 }
 
-/* Load More */
 .load-more-wrapper {
     margin-top: 24px;
     display: flex;
@@ -207,7 +199,6 @@ body {
     cursor: default;
 }
 
-/* Loader */
 .load-more-loader {
     position: fixed;
     inset: 0;
@@ -241,7 +232,6 @@ body {
     }
 }
 
-/* Small Pokémon Card */
 .pokemon-card {
     position: relative;
     border-radius: 24px;
@@ -313,7 +303,6 @@ body {
     transform: translateY(-4px);
 }
 
-/* Overlay */
 .overlay {
     position: fixed;
     inset: 0;
@@ -348,7 +337,6 @@ body {
     font-weight: 600;
 }
 
-/* Overlay top */
 .overlay-top {
     position: relative;
     padding: 20px 20px 90px;
@@ -373,7 +361,6 @@ body {
     filter: drop-shadow(0 16px 22px rgba(0, 0, 0, 0.65));
 }
 
-/* Overlay bottom */
 .overlay-bottom {
     flex: 1;
     display: flex;
@@ -390,7 +377,6 @@ body {
     padding-right: 4px;
 }
 
-/* Gender Icons */
 .gender-icon {
     font-size: 1.05rem;
     font-weight: 700;
@@ -411,7 +397,6 @@ body {
     margin-right: 4px;
 }
 
-/* Tabs */
 .overlay-tabs {
     display: flex;
     gap: 16px;
@@ -430,7 +415,6 @@ body {
     border-bottom: 2px solid #3b82f6;
 }
 
-/* Sections */
 .overlay-section {
     font-size: 0.9rem;
     display: none;
@@ -441,14 +425,12 @@ body {
     display: block;
 }
 
-/* Rows */
 .overlay-row {
     display: flex;
     justify-content: space-between;
     margin-bottom: 8px;
 }
 
-/* Stats */
 .stat-row {
     display: flex;
     align-items: center;
@@ -487,7 +469,6 @@ body {
     font-weight: 600;
 }
 
-/* Evolution */
 .evolution-chain {
     display: flex;
     flex-direction: column;
@@ -523,7 +504,6 @@ body {
     transform: rotate(90deg);
 }
 
-/* Shiny */
 .shiny-wrap {
     display: flex;
     justify-content: center;
@@ -545,7 +525,6 @@ body {
     margin-top: 16px;
 }
 
-/* Moves */
 .moves-list {
     display: flex;
     flex-direction: column;
@@ -560,7 +539,6 @@ body {
     font-size: 0.85rem;
 }
 
-/* Navigation buttons */
 .overlay-nav-buttons {
     display: flex;
     justify-content: space-between;
@@ -592,7 +570,6 @@ body {
     display: none;
 }
 
-/* Favourite-Heart im Overlay */
 .overlay-fav-button {
     width: 32px;
     height: 32px;

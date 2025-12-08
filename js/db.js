@@ -1,4 +1,3 @@
-// === Type Colors & Utility-Funktionen (für Template & Overlay) ===
 const TYPE_COLORS = {
     normal: "#A8A77A",
     fire: "#EE8130",
@@ -20,7 +19,6 @@ const TYPE_COLORS = {
     fairy: "#D685AD"
 };
 
-// Base Stat Color (für Stat-Balken)
 function getStatColor(base) {
     if (base <= 79) return "#5bc0de";
     if (base <= 109) return "#28a745";
@@ -28,23 +26,19 @@ function getStatColor(base) {
     return "#dc3545";
 }
 
-// ID als 4-stellige Nummer formatieren (1 -> 0001)
 function formatPokemonId(id) {
     return String(id).padStart(4, "0");
 }
 
-// Erstes Zeichen groß machen
 function capitalize(text) {
     return text ? text.charAt(0).toUpperCase() + text.slice(1) : "";
 }
 
-// === Globale Datenstrukturen ===
 const pokemonList = [];
 const pokemonCache = {};
 const speciesCache = {};
 let favouriteIds = [];
 
-// === Helper ===
 function convertToJson(response) {
     return response.json();
 }
@@ -57,7 +51,6 @@ function logPokemonError(error) {
     console.warn("Error loading Pokémon:", error);
 }
 
-// === Favourites im LocalStorage ===
 function loadFavouritesFromStorage() {
     const raw = localStorage.getItem("pokedex_favourites") || "[]";
     try {
@@ -85,7 +78,6 @@ function toggleFavourite(id) {
     saveFavouritesToStorage();
 }
 
-// === API-Extraktion: Bilder, Typen, Stats, Breeding, Moves ===
 function getPokemonImageFromApi(apiPokemon) {
     const s = apiPokemon.sprites;
     return s.other["official-artwork"].front_default ||
@@ -164,7 +156,6 @@ function getLevelUpMovesFromApi(apiPokemon) {
         .sort((a, b) => a.level - b.level);
 }
 
-// === Evolution-Chain ===
 function getIdFromSpeciesUrl(url) {
     return Number(url.split("/").filter(Boolean).pop());
 }
@@ -200,7 +191,6 @@ function loadEvolutionChainForSpecies(apiSpecies) {
         .catch(() => []);
 }
 
-// === Pokémon-Objekt erstellen ===
 function createPokemonFromApiData(apiPokemon, apiSpecies, evolutionChain) {
     const types = getTypesFromApi(apiPokemon);
     const image = getPokemonImageFromApi(apiPokemon);
@@ -234,7 +224,6 @@ function addPokemonToList(pokemon) {
     pokemonList.sort((a, b) => a.id - b.id);
 }
 
-// === Laden von Pokémon ===
 function createAndStorePokemon(apiPokemon, apiSpecies, evo, onChange) {
     const p = createPokemonFromApiData(apiPokemon, apiSpecies, evo);
     addPokemonToList(p);
@@ -276,7 +265,6 @@ function loadSinglePokemon(id, onChange) {
     fetchPokemonAndSpecies(id, onChange);
 }
 
-/* Lädt einen Bereich an IDs */
 function loadPokemonRange(startId, endId, onChange) {
     for (let id = startId; id <= endId; id++) {
         loadSinglePokemon(id, onChange);
