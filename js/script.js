@@ -5,6 +5,7 @@ let isLoadingMore = false;
 let currentFilterMode = "all";
 let currentOverlayIndex = 0;
 let lastScrollY = 0;
+let currentOverlayList = pokemonList;
 const pokemonGridElement = document.getElementById("pokemon-grid");
 const overlayElement = document.getElementById("overlay");
 const overlayContentElement = document.getElementById("overlay-content");
@@ -139,7 +140,6 @@ function toggleActiveClass(nodeList, className, predicate) {
 function showOverlayTab(tab) {
     const tabs = overlayContentElement.querySelectorAll(".overlay-tab");
     const sections = overlayContentElement.querySelectorAll(".overlay-section");
-
     toggleActiveClass(
         tabs,
         "overlay-tab--active",
@@ -189,13 +189,10 @@ function finishLoadMoreAfterDelay() {
 function handleLoadMoreClick() {
     if (isLoadingMore) return;
     startLoadMore();
-
     const startId = nextPokemonId;
     const endId = nextPokemonId + LOAD_MORE_COUNT - 1;
-
     loadPokemonRange(startId, endId, handlePokemonDataChanged);
     nextPokemonId = endId + 1;
-
     finishLoadMoreAfterDelay();
 }
 
