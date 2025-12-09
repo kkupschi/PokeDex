@@ -49,6 +49,7 @@ function unlockBodyScroll() {
 
 function renderPokemonGrid(list) {
     pokemonGridElement.innerHTML = list.map(getPokemonCardHTML).join("");
+    currentOverlayList = list;
 }
 
 function getFavouritePokemonList() {
@@ -66,7 +67,7 @@ function handlePokemonDataChanged() {
 }
 
 function findPokemonIndexById(id) {
-    return pokemonList.findIndex(p => p.id === id);
+    return currentOverlayList.findIndex(p => p.id === id);
 }
 
 function updateOverlayContent(pokemon) {
@@ -84,11 +85,14 @@ function animateOverlayCard(direction) {
 }
 
 function showPokemonInOverlayByIndex(index, direction) {
-    const pokemon = pokemonList[index];
+    const pokemon = currentOverlayList[index];
     if (!pokemon) return;
-    updateOverlayContent(pokemon);
+    overlayContentElement.innerHTML = getPokemonOverlayHTML(pokemon);
     currentOverlayIndex = index;
-    animateOverlayCard(direction);
+    const card = overlayContentElement.querySelector(".overlay-card");
+    if (!card) return;
+    if (direction === "left") card.classList.add("overlay-card--flip-left");
+    else if (direction === "right") card.classList.add("overlay-card--flip-right");
 }
 
 function openPokemonOverlay(id) {
@@ -111,7 +115,7 @@ function showPreviousPokemonInOverlay() {
 }
 
 function showNextPokemonInOverlay() {
-    if (currentOverlayIndex < pokemonList.length - 1) {
+    if (currentOverlayIndex < currentOverlayList.length - 1) {
         showPokemonInOverlayByIndex(currentOverlayIndex + 1, "right");
     }
 }
