@@ -155,8 +155,19 @@ function getPokemonOverlayHTML(p) {
                     <h2 class="overlay-name">${displayName}</h2>
                     <div class="overlay-top-right">
                         <span class="overlay-id">#${formattedId}</span>
-                        <button class="${favClass}" type="button" onclick="handleFavouriteClick(${p.id})">
+                        <button
+                            class="${favClass} overlay-fav-button"
+                            type="button"
+                            onclick="handleFavouriteClick(${p.id})"
+                        >
                             ${favIcon}
+                        </button>
+                        <button
+                            class="overlay-close-button"
+                            type="button"
+                            onclick="closeOverlay()"
+                        >
+                            ✕
                         </button>
                     </div>
                 </div>

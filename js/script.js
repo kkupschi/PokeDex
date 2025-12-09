@@ -13,6 +13,8 @@ const loadMoreButtonElement = document.getElementById("load-more-button");
 const loadMoreLoaderElement = document.getElementById("load-more-loader");
 const searchInputElement = document.getElementById("search-input");
 const searchMessageElement = document.getElementById("search-message");
+const loadMoreWrapperElement = document.querySelector(".load-more-wrapper");
+const loadMoreWrapper = document.querySelector(".load-more-wrapper");
 
 function getScrollbarWidth() {
     return window.innerWidth - document.documentElement.clientWidth;
@@ -54,6 +56,29 @@ function renderPokemonGrid(list) {
 
 function getFavouritePokemonList() {
     return pokemonList.filter(p => isFavourite(p.id));
+}
+
+function updateLoadMoreVisibility() {
+    const show = currentFilterMode === "all";
+    if (!loadMoreWrapperElement) return;
+    loadMoreWrapperElement.classList.toggle("hidden", !show);
+}
+
+function hideEffectivenessPanel() {
+    const panel = document.getElementById("effectiveness-panel");
+    if (panel) {
+        panel.classList.add("hidden");
+    }
+}
+
+function updateLoadMoreVisibility() {
+    const wrapper = document.querySelector(".load-more-wrapper");
+    if (!wrapper) return;
+    if (currentFilterMode === "all") {
+        wrapper.classList.remove("hidden");
+    } else {
+        wrapper.classList.add("hidden");
+    }
 }
 
 function getBaseListForCurrentFilter() {
@@ -122,11 +147,11 @@ function showNextPokemonInOverlay() {
 
 function handleFavouriteClick(id) {
     toggleFavourite(id);
-    const btn = document.querySelector(".overlay-fav-button");
+    const btn = overlayContentElement.querySelector(".overlay-fav-button");
     if (!btn) return;
     const active = isFavourite(id);
     btn.classList.toggle("overlay-fav-button--active", active);
-    btn.textContent = active ? "❤" : "♡";
+    btn.innerText = active ? "❤" : "♡";
 }
 
 function handleOverlayClick(event) {
@@ -158,16 +183,18 @@ function showOverlayTab(tab) {
 
 function showAllPokemon() {
     currentFilterMode = "all";
-    hideEffectiveness();
+    hideEffectivenessPanel();
     resetSearch();
     renderPokemonGrid(pokemonList);
+    updateLoadMoreVisibility();
 }
 
 function showFavouritePokemon() {
     currentFilterMode = "favourites";
-    hideEffectiveness();
+    hideEffectivenessPanel();
     resetSearch();
-    renderPokemonGrid(getFavouritePokemonList());
+    renderPokemonGrid(getBaseListForCurrentFilter());
+    updateLoadMoreVisibility();
 }
 
 function hideEffectivenessPanel() {
@@ -204,6 +231,7 @@ function resetSearch() {
     if (!searchInputElement || !searchMessageElement) return;
     searchInputElement.value = "";
     searchMessageElement.textContent = "";
+    loadMoreWrapper.classList.remove("hidden");
 }
 
 function filterPokemonListByName(list, term) {
@@ -233,9 +261,16 @@ function updateSearchResults(filtered) {
 
 function handleSearchInput(rawValue) {
     if (!searchInputElement || !searchMessageElement) return;
+    const cleaned = rawValue.replace(/[^a-zA-Z]/g, "");
+    searchInputElement.value = cleaned;
+    const value = cleaned.trim();
+    const length = value.length;
     const baseList = getBaseListForCurrentFilter();
-    const value = cleanSearchValue(rawValue);
-    searchInputElement.value = value;
+    if (length === 0) {
+        loadMoreWrapper.classList.remove("hidden");
+    } else {
+        loadMoreWrapper.classList.add("hidden");
+    }
     if (!value.length) {
         handleEmptySearch(baseList);
         return;
@@ -259,10 +294,13 @@ function toggleEffectiveness() {
 
 function showEffectiveness() {
     currentFilterMode = "effectiveness";
-    document.getElementById("effectiveness-panel").classList.remove("hidden");
-    pokemonGridElement.classList.add("hidden");
-    document.querySelector(".load-more-wrapper").classList.add("hidden");
     resetSearch();
+    const panel = document.getElementById("effectiveness-panel");
+    if (panel) {
+        panel.classList.remove("hidden");
+    }
+    pokemonGridElement.innerHTML = "";
+    updateLoadMoreVisibility();
 }
 
 function hideEffectiveness() {
@@ -279,3 +317,4 @@ function loadInitialPokemon() {
 
 loadFavouritesFromStorage();
 loadInitialPokemon();
+updateLoadMoreVisibility();
